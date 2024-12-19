@@ -20,10 +20,19 @@ const UserSchema = new mongoose.Schema({
         enum: ['admin', 'coach', 'user'],
         default: 'user', // Default role
     },
+    resetToken: {
+        type: String, // Token for password reset
+        default: null, // Default value is null
+    },
+    resetTokenExpiry: {
+        type: Date, // Expiry date for the reset token
+        default: null, // Default value is null
+    },
     createdAt: {
         type: Date,
         default: Date.now,
-    }
+    },
 });
 
+// Export the model
 export const userModel = mongoose.model("User", UserSchema);

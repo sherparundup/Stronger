@@ -5,10 +5,13 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import toast, { Toaster } from 'react-hot-toast';
+
 import Typography from "@mui/material/Typography";
+import "react-toastify/dist/ReactToastify.css";
+
 import Container from "@mui/material/Container";
 import { Card, CardContent } from "@mui/material";
-import { toast } from "react-toastify";
 
 const ForgotPassword = () => {
     const [isLoading, setIsLoading] = useState(false); // Loading state
@@ -32,6 +35,8 @@ const ForgotPassword = () => {
         try {
             setIsLoading(true); // Set loading to true
             setError(""); // Reset previous error message
+        
+
 
             const url = "http://localhost:8000/api/auth/forget-password"; // Make sure the URL is correct
             const res = await axios.post(url, { email });

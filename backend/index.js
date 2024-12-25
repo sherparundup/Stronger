@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv"
 import Conn from './Connection/MongoConn.js'
 import AuthRoutes from "./Routes/AuthRoutes.js"
+import UserRoutes from "./Routes/UserRoutes.js"
 import morgan from "morgan";
 import cors from "cors"
 dotenv.config();
@@ -18,6 +19,7 @@ app.get("/",(req,res)=>{
     res.send("hwheheha")
 });
 app.use("/api/auth",AuthRoutes);
+app.use("/api/User",UserRoutes)
 
 
 app.listen(Port,()=>{console.log(`running on port ${Port}`)})

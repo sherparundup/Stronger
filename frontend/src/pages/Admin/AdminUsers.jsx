@@ -17,7 +17,11 @@ const AdminUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/User/AllUser");
+        const response = await axios.get("http://localhost:8000/api/User/AllUser",{
+          headers: {
+            Authorization: auth.token
+          }
+        });
         const allUsers = response.data.allUser;
 
         setUsers(allUsers);

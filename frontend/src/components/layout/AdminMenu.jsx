@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../Context/AuthContext';
 import AdminUsers from '../../pages/Admin/AdminUsers';
 import CatagoryPages from '../../pages/admin/CatagoryPages';
-import ProductPage from '../../pages/Admin/ProductPages';
+import ProductPage from '../../pages/Admin/ProductPage/ProductPages';
 
 const AdminMenu = () => {
   const [selectedOption, setSelectedOption] = useState('catagory'); // Default option

@@ -9,6 +9,8 @@ import UserDashboard from "./pages/User/UserDashBoard"
 import Register from "./pages/Auth/Register"
 import Login from "./pages/Auth/Login"
 import ProtectedRoutes from "./components/Routes/ProtectedRoutes"
+import ProtectedCoachRoutes from "./components/Routes/ProtectedCoachRoutes"
+import ProtectedAdminRoutes from "./components/Routes/ProtectedAdminRoutes"
 import AdminDashboard from "./pages/Admin/AdminDashboard"
 import CoachDashboard from "./pages/Coach/CoachDashboard"
 import ForgetPassword from "./pages/Auth/ForgetPassword"
@@ -24,10 +26,10 @@ export default function App() {
       <Route path="/dashboard" element={<ProtectedRoutes/>}>
       <Route path="" element={<UserDashboard/>}/>
       </Route>
-      <Route path="/admindashboard" element={<ProtectedRoutes/>}>
+      <Route path="/admindashboard" element={<ProtectedAdminRoutes/>}>
       <Route path="" element={<AdminDashboard/>}/>
       </Route>
-      <Route path="/coachdashboard" element={<ProtectedRoutes/>}>
+      <Route path="/coachdashboard" element={<ProtectedCoachRoutes/>}>
       <Route path="" element={<CoachDashboard/>}/>
       </Route>
       <Route path="/Membership" element={<MembershipPage/>}/>

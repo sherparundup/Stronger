@@ -3,8 +3,7 @@ import { useAuth } from '../../Context/AuthContext'
 import axios from 'axios';
 import { Outlet } from 'react-router-dom';
 import Spinner from './Spinner';
-import env from "dotenv"
-env.config()
+
 const ProtectedAdminRoutes = () => {
     const [ok, setOk] = useState(false)
     const [auth, setAuth] = useAuth();
@@ -17,19 +16,20 @@ const ProtectedAdminRoutes = () => {
                         Authorization: auth?.token
                     }
                 })
+                if (res.data.ok) {
+
+                    setOk(true)
+                }
 
 
             } catch (error) {
                 console.log(error)
 
-            } if (res.data.ok) {
-
-                setOk(true)
-            }
-            if (auth?.token) {
-                checkIfAdmin();
-            }
+            } 
+            
+            
         }
+        checkIfAdmin();
 
 
     }, [auth?.token])

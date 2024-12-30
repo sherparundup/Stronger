@@ -6,6 +6,7 @@ import UserRoutes from "./Routes/UserRoutes.js"
 import ProductRoutes from "./Routes/ProductRoutes.js"
 import morgan from "morgan";
 import cors from "cors"
+import ExpressFormidable from "express-formidable";
 dotenv.config();
 
 Conn();//mongo ko conn

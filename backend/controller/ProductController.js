@@ -33,7 +33,7 @@ export const addProduct = async (req, res) => {
         // Handle image if provided
         if (image) {
             console.log("Uploaded image file:", image);  // Debugging line to check file data
-            
+
             newProduct.image = {
                 data: fs.readFileSync(image.path),  // Reads the image file as binary data
                 contentType: image.type,            // Gets the MIME type (e.g., image/jpeg)
@@ -44,7 +44,7 @@ export const addProduct = async (req, res) => {
         await newProduct.save();
         return res.status(200).json({
             success: true,
-            message: `Product added successfully. Image uploaded: ${image ? image.name : "No image uploaded"}`,
+            message: `Product added successfully`,
             product: newProduct,
         });
 
@@ -110,25 +110,51 @@ export const deleteProduct = async (req, res) => {
 // Update a product
 export const updateProduct = async (req, res) => {
     try {
-        const { _id, name, description, price, countInStock, image, category } = req.body;
-
-        if (!_id) {
+        const { name, description, price, countInStock, catagory } = req.fields;
+        const { image } = req.files;
+        const { id } = req.params;
+        if (!id) {
             return res.status(400).json({ success: false, message: "Product ID is required" });
         }
+        if (!name) {
+            return res.status(400).json({ success: false, message: "Product name is required" });
+        }
+        if (!description) {
+            return res.status(400).json({ success: false, message: "Product description is required" });
+        }
+        if (!price) {
+            return res.status(400).json({ success: false, message: "Product price is required" });
+        }
+        if (!countInStock) {
+            return res.status(400).json({ success: false, message: "Product count in stock is required" });
+        }
+        if (!catagory) {
+            return res.status(400).json({ success: false, message: "Product category is required" });
+        }
 
-        const isThereProduct = await productModel.findById(_id);
+        const isThereProduct = await productModel.findById(id);
         if (!isThereProduct) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
 
-        const updateProduct = await productModel.findByIdAndUpdate(_id, {
+        const updateProduct = await productModel.findByIdAndUpdate(id, {
             name,
             description,
             price,
             countInStock,
             image,
-            category,
+            catagory,
         }, { new: true });
+        if (image) {
+            updateProduct.image = {
+
+                data: fs.readFileSync(image.path),
+                contentType: image.type,
+            }
+        }
+        await updateProduct.save();
+        console.log("Received params:", req.params);
+
 
         return res.status(200).json({ success: true, message: "Product updated successfully", product: updateProduct });
 

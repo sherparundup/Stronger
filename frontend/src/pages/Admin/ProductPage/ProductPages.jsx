@@ -120,7 +120,7 @@ const ProductPages = () => {
                   <TableRow key={product._id}>
                     <TableCell>{product.name}</TableCell>
                     <TableCell>{product.description}</TableCell>
-                    <TableCell>${product.price}</TableCell>
+                    <TableCell>nrs{product.price}</TableCell>
                     <TableCell>{product.countInStock}</TableCell>
                     <TableCell>{product.catagory}</TableCell>
                     <TableCell>

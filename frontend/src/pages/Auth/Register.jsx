@@ -8,6 +8,8 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [
+    contactNumber, setContactNumber] = useState("");
   const [role, setRole] = useState("user"); // Default to 'user'
   const navigate = useNavigate();
 
@@ -15,19 +17,26 @@ const Register = () => {
     e.preventDefault();
     try {
       // API call to register the user
-      await axios.post(`http://localhost:8000/api/auth/register`, {
+      const res= await axios.post(`http://localhost:8000/api/auth/register`, {
         name,
         email,
         password,
         role,
+        contactNumber,
       });
       toast.success("Successfully signed up!");
       navigate("/login");
     } catch (error) {
       console.error("Error during registration:", error);
-      toast.error("Registration failed. Please try again.");
+      if (error.response.data.message) {
+        toast.error(error.response.data.message);
+    } else {
+        toast.error("Something went wrong. Please try again!");
     }
-  };
+}
+      
+    }
+  
 
   return (
     <Layout>
@@ -91,6 +100,29 @@ const Register = () => {
                 className="mt-1 w-full p-2.5 border rounded-lg text-gray-900 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="
+    contactNumber"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                
+    contactNumber
+              </label>
+              <input
+                type="
+    contactNumber"
+                id="
+    contactNumber"
+                placeholder="Enter your 
+    contactNumber"
+                className="mt-1 w-full p-2.5 border rounded-lg text-gray-900 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                value={
+    contactNumber}
+                onChange={(e) => setContactNumber(e.target.value)}
                 required
               />
             </div>

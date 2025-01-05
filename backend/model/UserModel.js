@@ -20,6 +20,10 @@ const UserSchema = new mongoose.Schema({
         enum: ['admin', 'coach', 'user'],
         default: 'user', // Default role
     },
+    contactNumber: {  // <-- This is the number field
+        type: Number,
+        required: true
+    },
     resetToken: {
         type: String, // Token for password reset
         default: null, // Default value is null

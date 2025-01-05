@@ -9,7 +9,7 @@ import bcrypt from "bcrypt"
 
 export const register = async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password, role, contactNumber } = req.body;
 
         // Check if the email is already in use
         const isThereThisEmailAlready = await userModel.findOne({ email });
@@ -22,7 +22,7 @@ export const register = async (req, res) => {
 
         // Hash the password and create a new user
         const HashedPassword = await HashPassword(password);
-        const newUser = new userModel({ name, email, password: HashedPassword, role });
+        const newUser = new userModel({ name, email, password: HashedPassword, role, contactNumber });
         await newUser.save();
 
         return res.status(201).json({
@@ -163,7 +163,7 @@ export const resetPassword = async (req, res) => {
         res.status(200).json({ success: true, message: "Password reset successfully." });
     } catch (err) {
         console.error("Error resetting password:", err);
-        res.status(500).json({ success: false, message: "Server error.", err:err.message });
+        res.status(500).json({ success: false, message: "Server error.", err: err.message });
     }
 
 

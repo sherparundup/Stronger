@@ -3,6 +3,7 @@ import { useAuth } from '../../Context/AuthContext';
 import AdminUsers from '../../pages/Admin/AdminUsers';
 import CatagoryPages from '../../pages/admin/CatagoryPages';
 import ProductPage from '../../pages/Admin/ProductPage/ProductPages';
+import MembershipPage from '../../pages/Admin/MembershipPage/MembershipPage';
 
 const AdminMenu = () => {
   const [selectedOption, setSelectedOption] = useState('catagory'); // Default option
@@ -12,6 +13,7 @@ const AdminMenu = () => {
     { name: 'catagory', label: 'Category' },
     { name: 'Products', label: 'Products' },
     { name: 'Users', label: 'Users' },
+    {name:'membership',label:"Membership"}
   ];
 
   // Dynamic rendering based on selectedOption
@@ -23,6 +25,8 @@ const AdminMenu = () => {
         return <ProductPage />;
       case 'Users':
         return <AdminUsers />;
+      case 'membership':
+        return <MembershipPage/>;
       default:
         return <p>Select an option to see content</p>;
     }
@@ -33,7 +37,7 @@ const AdminMenu = () => {
       <div className="p-6 bg-gray-100 min-h-screen flex flex-col lg:flex-row gap-6">
         {/* Left Sidebar: Navigation Menu */}
         <div
-          className="flex flex-col lg:w-1/4 space-y-4 overflow-y-auto"
+          className="flex flex-col lg:w-1/6 space-y-4 overflow-y-auto"
           style={{ maxHeight: '80vh' }} // Makes the sidebar scrollable
         >
           {options.map((option) => (

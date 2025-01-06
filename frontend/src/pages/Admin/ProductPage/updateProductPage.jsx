@@ -5,7 +5,7 @@ import { useAuth } from '../../../Context/AuthContext';
 import { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useAdminProductPageMode } from '../../../Context/AdminProductPageModeContext';
-const UpdateProductPage = ({ productId }) => {
+const UpdateProductPage = ({ productId ,refreshProducts}) => {
   const [product, setProduct] = useState({
     name: '',
     description: '',
@@ -34,6 +34,7 @@ const UpdateProductPage = ({ productId }) => {
             }
           }
         );
+
         setProduct(response.data.product);
       } catch (err) {
         setError('Error fetching product data');
@@ -87,6 +88,8 @@ const UpdateProductPage = ({ productId }) => {
       
       if(response.data.success){
         // Toaster.success('Product updated successfully!');
+        refreshProducts();
+
         setMode("viewProduct");
 
       } else {

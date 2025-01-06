@@ -24,6 +24,10 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    isMember:{
+        type: Boolean,
+        default: false,
+    },
     resetToken: {
         type: String, // Token for password reset
         default: null, // Default value is null

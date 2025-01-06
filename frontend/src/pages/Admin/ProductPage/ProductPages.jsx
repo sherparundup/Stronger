@@ -26,6 +26,7 @@ const ProductPages = () => {
   const [auth] = useAuth();
 
   // Handler for Edit
+
   const editProduct = (productId) => {
     setMode('updateProduct');
     setProductId(productId);
@@ -41,7 +42,7 @@ const ProductPages = () => {
       alert('Failed to refresh products. Please try again.');
     }
   };
-  
+
 
   // Handler for Delete
   const deleteProduct = async (productId) => {
@@ -169,9 +170,9 @@ const ProductPages = () => {
           </Table>
         </TableContainer>
       ) : mode === 'updateProduct' ? (
-        <UpdateProductPage productId={productId} />
+        <UpdateProductPage productId={productId} refreshProducts={refreshProducts} />
       ) : (
-        <AddProductPage refreshProducts={refreshProducts}/>
+        <AddProductPage refreshProducts={refreshProducts} />
       )}
     </>
   );

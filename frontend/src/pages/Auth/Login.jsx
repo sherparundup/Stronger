@@ -16,7 +16,9 @@ const Login = () => {
       const res = await axios.post(`http://localhost:8000/api/auth/login`, {
         email,
         password,
-      });
+      
+        
+        });
       if (res.status === 200) {
         toast.success('Successfully logged in!');
         if (res.data.success === true) {

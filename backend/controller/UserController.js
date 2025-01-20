@@ -12,3 +12,20 @@ export const getAllUser=async(req,res)=>{
 
 
 }
+export const getUserByName=async(req,res)=>{
+    try {
+        const{name}=req.body;
+        if(!name){
+            return res.status(400).json({success:false,message:"Name is required"});
+        }
+        const user=await userModel.findOne({name});
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        return res.status(200).json({success:true,name:name,userFiltered:user});
+        
+    } catch (error) {
+        return res.status(500).json({success:false,error:error.message});
+        
+    }
+}

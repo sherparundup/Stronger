@@ -8,6 +8,7 @@ import MembershipPage from '../../pages/Admin/MembershipPage/MembershipPage';
 const AdminMenu = () => {
   const [selectedOption, setSelectedOption] = useState('catagory'); // Default option
   const [auth] = useAuth();
+  
 
   const options = [
     { name: 'catagory', label: 'Category' },

@@ -3,6 +3,7 @@ import React from 'react'
 const MembershipPage = () => {
   return (
     <div>MembershipPage</div>
+    
   )
 }
 

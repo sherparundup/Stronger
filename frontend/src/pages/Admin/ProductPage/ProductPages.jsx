@@ -91,7 +91,8 @@ const ProductPages = () => {
         Products Page
       </Typography>
 
-      <Button
+      {mode === 'viewProduct' ?<>
+        <Button
         variant="contained"
         color="primary"
         onClick={() => setMode('addProduct')}
@@ -99,6 +100,15 @@ const ProductPages = () => {
       >
         Add Product
       </Button>
+      </>:<>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => setMode('viewProduct')}
+        style={{ marginBottom: '20px' }}
+      >
+        View Products
+      </Button></>}
 
       {mode === 'viewProduct' ? (
         <TableContainer component={Paper}>

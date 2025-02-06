@@ -1,6 +1,6 @@
 import express from "express";
-import { getAllUser, getUserByName } from "../controller/UserController.js";
-import { isAdmin, IsSignedIn } from "../middleware/AuthMidlleWear.js";
+import { getAllUser, getUserByName } from "../controllers/user.controller.js";
+import { isAdmin, IsSignedIn } from '../middleware/auth.midlleWear.js';
 
 const Router=express.Router();
 

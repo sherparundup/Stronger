@@ -1,7 +1,7 @@
 import express from 'express';
-import { addProduct, deleteProduct, getAllProduct, getSingleProduct, updateProduct } from '../controller/ProductController.js';
+import { addProduct, deleteProduct, getAllProduct, getSingleProduct, updateProduct } from '../controllers/product.controller.js';
 import ExpressFormidable from 'express-formidable';
-import { isAdmin, IsSignedIn } from '../middleware/AuthMidlleWear.js';
+import { isAdmin, IsSignedIn } from '../middleware/auth.midlleWear.js';
 
 const Router = express.Router();
 

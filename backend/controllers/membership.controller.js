@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { MembershipModel, UserMembershipModel } from '../model/MembershipModel.js';
-import { userModel } from "../model/UserModel.js";
+import { MembershipModel, UserMembershipModel } from '../model/membership.model.js';
+import { userModel } from "../model/user.model.js";
 
 // Controller for creating new membership plans (for Admin)
 export const CreateMembershipController = async (req, res) => {
@@ -40,7 +40,7 @@ export const CreateMembershipController = async (req, res) => {
         // Save the new membership using async/await
         const membership = await newMembership.save();
 
-        return res.status(200).json({ message: "Membership Created Successfully", membership });
+        return res.status(200).json({success:true, message: "Membership Created Successfully", membership });
     } catch (error) {
         return res.status(400).json({ error: error.message, message: "Failed to create Membership" });
     }
@@ -74,7 +74,7 @@ export const joinMembership = async (req, res) => {
         // Create a new UserMembership
         const newMembership = new UserMembershipModel({
             userId: req.user?._id, // Make sure req.userId is populated by middleware
-            membershipId: _id, // Pass the membershipId here
+            membershipId: membership._id, // Pass the membershipId here
             name,
             email,
             contactNumber,
@@ -85,7 +85,7 @@ export const joinMembership = async (req, res) => {
             startDate,
             endDate,
         });
-
+        
         const savedMembership = await newMembership.save();
 
         return res.status(200).json({ message: "Membership joined successfully", membership: savedMembership });
@@ -93,3 +93,38 @@ export const joinMembership = async (req, res) => {
         return res.status(400).json({ error: error.message, message: "Failed to join membership" });
     }
 };
+
+export const getAllMembership = async (req, res) => {
+
+    try {
+        const memberships=await MembershipModel.find()
+        if(!memberships){
+            return res.status(404).json({ message: "Membership not found" });
+        }
+        return res.status(200).json({success:true, data:memberships});
+        
+    } catch (error) {
+        return res.status(400).json({ error: error.message, message: "Failed to get Membership" });
+        
+    }
+}
+export const updateMembership= async (req, res) => {
+    try {
+        const {_id} = req.params;
+        const membershipToBeUpdated = await MembershipModel.findById(_id);
+        if(!membershipToBeUpdated){
+            return res.status(404).json({ success:false ,message: "Membership not found" });
+        }
+        const { MembershipName, price, duration, description, membershipType } = req.body;
+        const updatedMembership=await MembershipModel.findByIdAndUpdate(_id,{MembershipName, price, duration, description, membershipType});
+        return res.status(200).json({success:true, message: "Membership Updated Successfully", updatedMembership });
+    } catch (error) {
+        return res.status(400).json({ error: error.message, message: "Failed to update Membership" });
+        
+    }
+    
+}
+export const deleteMembership= async (req, res) => {
+    
+}
+

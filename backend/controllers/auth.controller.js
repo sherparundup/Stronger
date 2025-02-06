@@ -1,10 +1,11 @@
 import express from "express";
-import { userModel } from "../model/UserModel.js";
+import { userModel } from "../model/user.model.js";
 import { ComparePassword, HashPassword } from "../helper/authHelper.js";
 import JWT from "jsonwebtoken";
 import crypto from 'crypto';
 import nodemailer from "nodemailer"
 import bcrypt from "bcrypt"
+
 
 
 export const register = async (req, res) => {

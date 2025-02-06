@@ -1,6 +1,6 @@
 import express from "express";
-import {register,login,test, forgetPassword, resetPassword} from "../controller/AuthController.js"
-import { isAdmin, isCoach, IsSignedIn } from "../middleware/AuthMidlleWear.js";
+import {register,login,test, forgetPassword, resetPassword} from "../controllers/auth.controller.js"
+import { isAdmin, isCoach, IsSignedIn } from "../middleware/auth.midlleWear.js";
 const Router=express.Router();
 
 //auth routes

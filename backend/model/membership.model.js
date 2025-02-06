@@ -38,7 +38,7 @@ const UserMembershipSchema = new mongoose.Schema({
   },
   membershipId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Memberships', // References Membership model
+    ref: 'Membership', // References Membership model
     required: true
   },
   name: {
@@ -48,13 +48,11 @@ const UserMembershipSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true, // Ensure unique email for each user
   },
   contactNumber: {
     type: String,
     required: true,
-    unique: true, // Ensure unique contactNumber number for each user
-  },
+    },
   duration: {
     type: Number,
     required: true,
@@ -85,7 +83,7 @@ const UserMembershipSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['Card', 'Cash', 'Online'],
+    enum: ['Cash', 'Online'],
     required: true,
   },
   transactionId: {

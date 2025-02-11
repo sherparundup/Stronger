@@ -138,14 +138,9 @@ const ProductPages = () => {
                       {new Date(product.createdAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
-                      {product.image?.data ? (
+                      {product.image?.url ? (
                         <img
-                          src={`data:${product.image.contentType};base64,${btoa(
-                            new Uint8Array(product.image.data.data).reduce(
-                              (data, byte) => data + String.fromCharCode(byte),
-                              ''
-                            )
-                          )}`}
+                          src={product.image.url}
                           alt={product.name}
                           style={{ width: '100px', height: '100px' }}
                         />

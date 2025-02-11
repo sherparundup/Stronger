@@ -1,12 +1,14 @@
 import productModel from "../model/product.model.js";
 import fs from "fs";
+import {ApiResponse} from "../utils/util.api.response.js"
+import { uploadOnCloudinary } from "../utils/cloudinary.util.js";
 
 // Add a new product
 
 export const addProduct = async (req, res) => {
     try {
-        const { name, description, price, countInStock, catagory } = req.fields;
-        const { image } = req.files;  // File data will be in req.files
+        const { name, description, price, countInStock, catagory } = req.body;
+        const  image  = req.file;  // File data will be in req.files
 
         // Validate required fields
         if (!name || !price || !countInStock) {
@@ -32,13 +34,22 @@ export const addProduct = async (req, res) => {
 
         // Handle image if provided
         if (image) {
-            console.log("Uploaded image file:", image);  // Debugging line to check file data
-
-            newProduct.image = {
-                data: fs.readFileSync(image.path),  // Reads the image file as binary data
-                contentType: image.type,            // Gets the MIME type (e.g., image/jpeg)
-            };
-        }
+            const imagePath = image.path;
+            try {
+              const uploadimage = await uploadOnCloudinary(imagePath);
+              if (!uploadimage) {
+                return res
+                  .status(400)
+                  .json(new ApiResponse(400, {}, "Image upload failed."));
+              }
+              newProduct.image.url = uploadimage.secure_url;
+              await newProduct.save();
+            } catch (error) {
+              return res
+                .status(500)
+                .json(new ApiResponse(500, error.message, "Image upload to Cloudinary failed."));
+            }
+          }
 
         // Save the product
         await newProduct.save();

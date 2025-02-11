@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { MembershipModel, UserMembershipModel } from '../model/membership.model.js';
 import { userModel } from "../model/user.model.js";
+import {ApiResponse} from "../utils/util.api.response.js"
 
 // Controller for creating new membership plans (for Admin)
 export const CreateMembershipController = async (req, res) => {
@@ -125,6 +126,33 @@ export const updateMembership= async (req, res) => {
     
 }
 export const deleteMembership= async (req, res) => {
+    try {
+        const {_id}=req.params
+        const membership= await MembershipModel.findByIdAndDelete({_id});
+        if(!membership){
+          return  res.json(new ApiResponse(404,null,"no membership found"))
+        }
+        return res.json(new ApiResponse(200,membership,"deleted successfully"))
+        
+    } catch (error) {
+        return res.json(new ApiResponse(500,error.message,"something went wrong"))
+        
+    }
     
+}
+export const singleMembership= async (req, res) => {
+ try {
+    const {_id}=req.params;
+    const memberShip= await MembershipModel.findById({_id});
+    if(!memberShip){
+        return res.json (new ApiResponse(404,null,"nosuch membership found"))
+    }
+    return res.json(new ApiResponse(200,memberShip,"memberwhip found"))
+
+    
+} catch (error) {
+     return (new ApiResponse(500,error.message,"something went wrong"))
+    
+ }   
 }
 

@@ -12,6 +12,8 @@ import {
   FormControl,
   Typography,
 } from '@mui/material';
+import MembershipPage from './MembershipPage';
+import { useAdminMembershipState } from '../../../Context/AdminMembershipStateContext';
 
 const CreatedMembershipPage = () => {
   const [MembershipName, setMembershipName] = useState('');
@@ -19,8 +21,9 @@ const CreatedMembershipPage = () => {
   const [duration, setDuration] = useState('');
   const [description, setDescription] = useState('');
   const [membershipType, setMembershipType] = useState('');
+  const [mode,setMode] = useAdminMembershipState('');
   const [auth] = useAuth();
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!MembershipName || !price || !duration || !description || !membershipType) {
@@ -28,7 +31,7 @@ const CreatedMembershipPage = () => {
       console.log('Form validation failed');
       return;
     }
-
+    
     try {
       const res = await axios.post(
         'http://localhost:8000/api/membership/CreateMembership',
@@ -46,20 +49,28 @@ const CreatedMembershipPage = () => {
         }
       );
       if (res.data.success) {
+        
         toast.success('Membership Created Successfully');
+        setMode("ViewMembership");
       }
+
     } catch (error) {
       toast.error('Failed to create Membership');
       console.log(error);
     }
   };
+  {
+    mode==="ViewMembership" && <MembershipPage/>
+  }
 
   return (
+    <>
+    
     <Box
       component="form"
       onSubmit={handleSubmit}
       sx={{ maxWidth: 500, margin: 'auto', padding: 2, boxShadow: 3, borderRadius: 2 }}
-    >
+      >
       <Typography variant="h4" align="center" gutterBottom>
         Create Membership
       </Typography>
@@ -71,7 +82,7 @@ const CreatedMembershipPage = () => {
         margin="normal"
         value={MembershipName}
         onChange={(e) => setMembershipName(e.target.value)}
-      />
+        />
 
       <TextField
         label="Price"
@@ -88,9 +99,9 @@ const CreatedMembershipPage = () => {
       <Select labelId="Duration"
       value={duration}
       onChange={(e) => setDuration  (Number(e.target.value))}>
-      <MenuItem value="1 ">1 Month</MenuItem>
-      <MenuItem value="3 ">3 Months</MenuItem>
-      <MenuItem value="6 ">6 Months</MenuItem>
+      <MenuItem value="1">1 Month</MenuItem>
+      <MenuItem value="3">3 Months</MenuItem>
+      <MenuItem value="6">6 Months</MenuItem>
       </Select>
      </FormControl>
 
@@ -103,7 +114,7 @@ const CreatedMembershipPage = () => {
         margin="normal"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-      />
+        />
 
       <FormControl fullWidth margin="normal">
         <InputLabel id="membershipType-label
@@ -112,7 +123,7 @@ const CreatedMembershipPage = () => {
           labelId="membershipType-label"
           value={membershipType}
           onChange={(e) => setMembershipType(e.target.value)}
-        >
+          >
           <MenuItem value="">Select Membership Type</MenuItem>
           <MenuItem value="Standard">Standard</MenuItem>
           <MenuItem value="Premium">Premium</MenuItem>
@@ -125,10 +136,11 @@ const CreatedMembershipPage = () => {
         color="primary"
         fullWidth
         sx={{ marginTop: 2 }}
-      >
+        >
         Create Membership
       </Button>
     </Box>
+        </>
   );
 };
 

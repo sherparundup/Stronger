@@ -2,11 +2,12 @@ import express from 'express';
 import { addProduct, deleteProduct, getAllProduct, getSingleProduct, updateProduct } from '../controllers/product.controller.js';
 import ExpressFormidable from 'express-formidable';
 import { isAdmin, IsSignedIn } from '../middleware/auth.midlleWear.js';
+import { upload } from "../middleware/multter.middleware.js";
 
 const Router = express.Router();
 
 // Use ExpressFormidable in the routes that need it, no need for app.use() here
-Router.post("/addProduct", IsSignedIn, isAdmin, ExpressFormidable(), addProduct);
+Router.post("/addProduct", IsSignedIn, isAdmin,upload.single("image"), addProduct);
 Router.get("/getAllProduct", IsSignedIn, isAdmin, ExpressFormidable(), getAllProduct);
 Router.get("/getSingleProduct/:id", IsSignedIn, isAdmin, ExpressFormidable(), getSingleProduct);
 Router.delete("/deleteProduct/:id", IsSignedIn, isAdmin, ExpressFormidable(), deleteProduct);

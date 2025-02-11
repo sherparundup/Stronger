@@ -14,6 +14,7 @@ import CoachDashboard from "./pages/Coach/CoachDashboard"
 import ForgetPassword from "./pages/Auth/ForgetPassword"
 import ResetPassword from "./pages/Auth/ResetPassword"
 import { AdminProductPageModeProvider } from "./Context/AdminProductPageModeContext"
+import { AdminMembershipStateProvider } from "./Context/AdminMembershipStateContext"
 export default function App() {
   return (
       <AdminProductPageModeProvider>
@@ -28,7 +29,17 @@ export default function App() {
       </Route>
 
         <Route path="/admindashboard" element={<ProtectedRoutes/>}>
-        <Route path="" element={<AdminDashboard/>}/>
+        <Route
+          path=""
+          element={
+            <AdminMembershipStateProvider>
+
+            <AdminProductPageModeProvider>
+              <AdminDashboard />
+            </AdminProductPageModeProvider>
+            </AdminMembershipStateProvider>
+          }
+        />
         </Route>
       <Route path="/coachdashboard" element={<ProtectedRoutes/>}>
       <Route path="" element={<CoachDashboard/>}/>

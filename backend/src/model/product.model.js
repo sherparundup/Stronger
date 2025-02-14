@@ -29,11 +29,10 @@ const productSchema = new mongoose.Schema({
         required: true,
 
     },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
+    
 
+},{
+    timestamps:true
 })
 const productModel = mongoose.model("Product", productSchema);
 export default productModel;    

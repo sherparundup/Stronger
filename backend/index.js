@@ -7,6 +7,7 @@ import ProductRoutes from "./src/routes/product.route.js"
 import MembershipRoute from "./src/routes/membership.route.js"
 import morgan from "morgan";
 import cors from "cors"
+import PaymentRoutes from"./src/routes/payment.routes.js"
 import ExpressFormidable from "express-formidable";
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use("/api/auth",AuthRoutes);
 app.use("/api/User",UserRoutes)
 app.use("/api/membership",MembershipRoute)
 app.use("/api/Product",ProductRoutes)
+app.use("/api/Payment",PaymentRoutes)
 
 
 app.listen(Port,()=>{console.log(`running on port ${Port}`)})

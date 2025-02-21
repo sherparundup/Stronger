@@ -99,10 +99,10 @@ export const getAllMembership = async (req, res) => {
 
     try {
         const memberships=await MembershipModel.find()
-        if(!memberships){
-            return res.status(404).json({ message: "Membership not found" });
+        if (memberships.length === 0) {
+            return res.status(404).json({ message: "No memberships found" });
         }
-        return res.status(200).json({success:true, data:memberships});
+        return res.json(new ApiResponse(200,memberships,"it works"))
         
     } catch (error) {
         return res.status(400).json({ error: error.message, message: "Failed to get Membership" });

@@ -15,6 +15,7 @@ import ForgetPassword from "./pages/Auth/ForgetPassword"
 import ResetPassword from "./pages/Auth/ResetPassword"
 import { AdminProductPageModeProvider } from "./Context/AdminProductPageModeContext"
 import { AdminMembershipStateProvider } from "./Context/AdminMembershipStateContext"
+import ProductDetailsPage from "./pages/ProductDetailsPage"
 export default function App() {
   return (
       <AdminProductPageModeProvider>
@@ -46,6 +47,8 @@ export default function App() {
       </Route>
       <Route path="/Membership" element={<MembershipPage/>}/>
       <Route path="/ProductsPage" element={<ProductsPage/>}/>
+      <Route path="//product/:id" element={<ProductDetailsPage/>}/>
+
       <Route path="/ServicePage" element={<ServicePage/>}/>
       <Route path="/AboutPage" element={<AboutPage/>}/>
       <Route path="/*" element={<PagesNotFound/>}/>

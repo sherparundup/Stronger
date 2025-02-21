@@ -6,7 +6,7 @@ const paymentSchema = new mongoose.Schema(
     pidx: { type: String, unique: true },
     productId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "PurchasedItem",
+      ref: "purchasedProduct",
       required: true,
     },
     amount: { type: Number, required: true },

@@ -1,9 +1,12 @@
-import PaymentModel from "../model/payment.model.js";
+import Payment from "../model/payment.model.js";
+import productModel from "../model/product.model.js";
+import purchasedProduct from "../model/purchasedProduct.model.js";
+import PurchasedProduct from "../model/purchasedProduct.model.js"
 export const InitializeEsewa=async(req,res)=>{
     try {
         const { itemId, totalPrice } = req.body;
         // Validate item exists and the price matches
-        const itemData = await Item.findOne({
+        const itemData = await productModel.findOne({
           _id: itemId,
           price: Number(totalPrice),
         });
@@ -16,7 +19,7 @@ export const InitializeEsewa=async(req,res)=>{
         }
     
         // Create a record for the purchase
-        const purchasedItemData = await PurchasedItem.create({
+        const purchasedItemData = await PurchasedProduct.create({
           item: itemId,
           paymentMethod: "esewa",
           totalPrice: totalPrice,
@@ -29,13 +32,13 @@ export const InitializeEsewa=async(req,res)=>{
         });
     
         // Respond with payment details
-        res.json({
+        return res.json({
           success: true,
           payment: paymentInitiate,
           purchasedItemData,
         });
       } catch (error) {
-        res.status(500).json({
+       return res.status(500).json({
           success: false,
           error: error.message,
         });
@@ -52,7 +55,7 @@ export const completePayment=async (req, res) => {
       const paymentInfo = await verifyEsewaPayment(data);
   
       // Find the purchased item using the transaction UUID
-      const purchasedItemData = await PurchasedItem.findById(
+      const purchasedItemData = await purchasedProduct.findById(
         paymentInfo.response.transaction_uuid
       );
   
@@ -76,13 +79,13 @@ export const completePayment=async (req, res) => {
       });
   
       // Update the purchased item status to 'completed'
-      await PurchasedItem.findByIdAndUpdate(
+      await purchasedProduct.findByIdAndUpdate(
         paymentInfo.response.transaction_uuid,
         { $set: { status: "completed" } }
       );
   
       // Respond with success message
-      res.json({
+      return res.json({
         success: true,
         message: "Payment successful",
         paymentData,

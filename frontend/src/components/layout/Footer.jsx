@@ -1,9 +1,18 @@
 import React from 'react'
+import Map from '../Footer.components/Maps'
+import Contact from '../Footer.components/ContactUs'
+import FAQ from '../Footer.components/FAQ'
 
 const Footer = () => {
   return (
-    <div className=' bg-gray-900  h-40 '>
-      <h4 className='text-white text-center '>by rundup sherpa</h4></div>
+    <>
+    <div className='mt-[100px]'>
+      <Contact/>
+      <FAQ/>
+
+    </div>
+    
+    </>
   )
 }
 

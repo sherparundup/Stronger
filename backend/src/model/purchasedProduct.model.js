@@ -6,6 +6,10 @@ const purchasedProductScheme = mongoose.Schema(
       ref: "Product",
       require: true,
     },
+    quantity:{
+      type:Number,
+      required:true
+    },
     totalPrice: {
       type: Number,
       required: true,

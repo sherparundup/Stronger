@@ -8,9 +8,9 @@ const Router = express.Router();
 
 // Use ExpressFormidable in the routes that need it, no need for app.use() here
 Router.post("/addProduct", IsSignedIn, isAdmin,upload.single("image"), addProduct);
-Router.get("/getAllProduct", IsSignedIn, isAdmin, ExpressFormidable(), getAllProduct);
-Router.get("/getSingleProduct/:id", IsSignedIn, isAdmin, ExpressFormidable(), getSingleProduct);
-Router.delete("/deleteProduct/:id", IsSignedIn, isAdmin, ExpressFormidable(), deleteProduct);
+Router.get("/getAllProduct",  getAllProduct);
+Router.get("/getSingleProduct/:id",getSingleProduct);
+Router.delete("/deleteProduct/:id", IsSignedIn, isAdmin, deleteProduct);
 Router.put("/updateProduct/:id", ExpressFormidable(), updateProduct);
 // Router.put("/updateProduct/:id", IsSignedIn, isAdmin, ExpressFormidable(), updateProduct);
 

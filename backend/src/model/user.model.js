@@ -20,6 +20,12 @@ const UserSchema = new mongoose.Schema({
         enum: ['admin', 'coach', 'user'],
         default: 'user', // Default role
     },
+    image:{
+        url:{
+            type:String,
+            required: true
+        }
+    },
     contactNumber: {  // <-- This is the number field
         type: Number,
         required: true

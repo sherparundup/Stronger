@@ -6,7 +6,7 @@ const Router = express.Router();
 
 Router.post("/CreateMembership",IsSignedIn,isAdmin,CreateMembershipController)
 Router.post("/joinMembership/:_id",IsSignedIn,joinMembership)
-Router.get("/getAllMembership",IsSignedIn,isAdmin,getAllMembership);
+Router.get("/getAllMembership",getAllMembership);
 Router.put("/updateMembership/:_id",IsSignedIn,isAdmin,updateMembership);
 Router.delete("/deleteMembership/:_id",IsSignedIn,isAdmin,deleteMembership);
 Router.get("/singleMembership/:_id",IsSignedIn,isAdmin,singleMembership);

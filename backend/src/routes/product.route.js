@@ -11,7 +11,7 @@ Router.post("/addProduct", IsSignedIn, isAdmin,upload.single("image"), addProduc
 Router.get("/getAllProduct",  getAllProduct);
 Router.get("/getSingleProduct/:id",getSingleProduct);
 Router.delete("/deleteProduct/:id", IsSignedIn, isAdmin, deleteProduct);
-Router.put("/updateProduct/:id", ExpressFormidable(), updateProduct);
+Router.put("/updateProduct/:id",upload.single("image") , updateProduct);
 // Router.put("/updateProduct/:id", IsSignedIn, isAdmin, ExpressFormidable(), updateProduct);
 
 export default Router;

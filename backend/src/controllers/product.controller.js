@@ -121,53 +121,43 @@ export const deleteProduct = async (req, res) => {
 // Update a product
 export const updateProduct = async (req, res) => {
     try {
-        const { name, description, price, countInStock, catagory } = req.fields;
-        const { image } = req.files;
+        const { name, description, price, countInStock, catagory } = req.body;
+        const image = req.file; // Extract image file
         const { id } = req.params;
-        if (!id) {
-            return res.status(400).json({ success: false, message: "Product ID is required" });
-        }
-        if (!name) {
-            return res.status(400).json({ success: false, message: "Product name is required" });
-        }
-        if (!description) {
-            return res.status(400).json({ success: false, message: "Product description is required" });
-        }
-        if (!price) {
-            return res.status(400).json({ success: false, message: "Product price is required" });
-        }
-        if (!countInStock) {
-            return res.status(400).json({ success: false, message: "Product count in stock is required" });
-        }
-        if (!catagory) {
-            return res.status(400).json({ success: false, message: "Product category is required" });
-        }
 
+        if (!id) return res.status(400).json({ success: false, message: "Product ID is required" });
+        if (!name) return res.status(400).json({ success: false, message: "Product name is required" });
+        if (!description) return res.status(400).json({ success: false, message: "Product description is required" });
+        if (!price) return res.status(400).json({ success: false, message: "Product price is required" });
+        if (!countInStock) return res.status(400).json({ success: false, message: "Product count in stock is required" });
+        if (!catagory) return res.status(400).json({ success: false, message: "Product category is required" });
+
+        // Check if product exists
         const isThereProduct = await productModel.findById(id);
         if (!isThereProduct) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
 
-        const updateProduct = await productModel.findByIdAndUpdate(id, {
-            name,
-            description,
-            price,
-            countInStock,
-            image,
-            catagory,
-        }, { new: true });
+        // Handle Image Upload
+        let uploadedImage = isThereProduct.image; // Keep old image if no new image is provided
         if (image) {
-            updateProduct.image = {
-
-                data: fs.readFileSync(image.path),
-                contentType: image.type,
+            const upload = await uploadOnCloudinary(image.path);
+            if (!upload) {
+                return res.status(400).json({ success: false, message: "Image upload failed" });
             }
+            uploadedImage = { url: upload.secure_url };
         }
-        await updateProduct.save();
-        console.log("Received params:", req.params);
 
+        // Update product after handling image
+        const updatedProduct = await productModel.findByIdAndUpdate(
+            id,
+            { name, description, price, countInStock, catagory, image: uploadedImage },
+            { new: true }
+        );
 
-        return res.status(200).json({ success: true, message: "Product updated successfully", product: updateProduct });
+        await updatedProduct.save(); // Save after update
+
+        return res.status(200).json({ success: true, message: "Product updated successfully", product: updatedProduct });
 
     } catch (error) {
         console.error("Error in updateProduct:", error);

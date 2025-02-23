@@ -8,7 +8,7 @@ import MembershipRoute from "./src/routes/membership.route.js"
 import morgan from "morgan";
 import cors from "cors"
 import PaymentRoutes from"./src/routes/payment.routes.js"
-import ExpressFormidable from "express-formidable";
+import UserTestimonial from "./src/routes/userTestimonial.route.js"
 dotenv.config();
 
 Conn();//mongo ko conn
@@ -27,6 +27,7 @@ app.use("/api/User",UserRoutes)
 app.use("/api/membership",MembershipRoute)
 app.use("/api/Product",ProductRoutes)
 app.use("/api/Payment",PaymentRoutes)
+app.use("/api/UserTestimonial",UserTestimonial)
 
 
 app.listen(Port,()=>{console.log(`running on port ${Port}`)})

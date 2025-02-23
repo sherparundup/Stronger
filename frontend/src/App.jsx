@@ -5,10 +5,11 @@ import ProductsPage from "./pages/ProductsPage"
 import ServicePage from "./pages/ServicesPage"
 import AboutPage from "./pages/About"
 import PagesNotFound from "./pages/PagesNotFound"
-import UserDashboard from "./pages/User/UserDashBoard"
+import UserDashboard from "./pages/User/UserDashBoardPages/UserDashBoard"
 import Register from "./pages/Auth/Register"
 import Login from "./pages/Auth/Login"
 import ProtectedRoutes from "./components/Routes/ProtectedRoutes"
+import AdminProtectedRoutes from "./components/Routes/ProtectedAdminRoutes"
 import AdminDashboard from "./pages/Admin/AdminDashboard"
 import CoachDashboard from "./pages/Coach/CoachDashboard"
 import ForgetPassword from "./pages/Auth/ForgetPassword"
@@ -16,6 +17,7 @@ import ResetPassword from "./pages/Auth/ResetPassword"
 import { AdminProductPageModeProvider } from "./Context/AdminProductPageModeContext"
 import { AdminMembershipStateProvider } from "./Context/AdminMembershipStateContext"
 import ProductDetailsPage from "./pages/ProductDetailsPage"
+import AddToCart from "./pages/User/UserDashBoardPages/AddToCart"
 export default function App() {
   return (
       <AdminProductPageModeProvider>
@@ -29,7 +31,7 @@ export default function App() {
       <Route path="" element={<UserDashboard/>}/>
       </Route>
 
-        <Route path="/admindashboard" element={<ProtectedRoutes/>}>
+        <Route path="/admindashboard" element={<AdminProtectedRoutes/>}>
         <Route
           path=""
           element={

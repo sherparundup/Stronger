@@ -2,64 +2,67 @@ import Payment from "../model/payment.model.js";
 import productModel from "../model/product.model.js";
 import purchasedProduct from "../model/purchasedProduct.model.js";
 import PurchasedProduct from "../model/purchasedProduct.model.js"
+import { getEsewaPaymentHash, verifyEsewaPayment } from "../utils/esewa.util.js";
 export const InitializeEsewa=async(req,res)=>{
     try {
-        const { itemId, totalPrice } = req.body;
+        const { ProductId, totalPrice ,quantity} = req.body;
         // Validate item exists and the price matches
-        const itemData = await productModel.findOne({
-          _id: itemId,
+        const productData = await productModel.findOne({
+          _id: ProductId,
           price: Number(totalPrice),
         });
     
-        if (!itemData) {
+        if (!productData) {
           return res.status(400).send({
             success: false,
             message: "Item not found or price mismatch.",
           });
         }
-    
-        // Create a record for the purchase
-        const purchasedItemData = await PurchasedProduct.create({
-          item: itemId,
-          paymentMethod: "esewa",
-          totalPrice: totalPrice,
-        });
-    
-        // Initiate payment with eSewa
-        const paymentInitiate = await getEsewaPaymentHash({
-          amount: totalPrice,
-          transaction_uuid: purchasedItemData._id,
-        });
+          console.log("1")
+          // Create a record for the purchase
+          const purchasedProductData = await PurchasedProduct.create({
+            product: ProductId,
+            paymentMethod: "esewa",
+            totalPrice: totalPrice,
+            quantity
+          });
+          console.log("2")
+          
+          // Initiate payment with eSewa
+          const paymentInitiate = await getEsewaPaymentHash({
+            amount: totalPrice,
+            transaction_uuid: purchasedProductData._id,
+          });
+          console.log("3")
     
         // Respond with payment details
         return res.json({
           success: true,
           payment: paymentInitiate,
-          purchasedItemData,
+          purchasedProductData,
         });
       } catch (error) {
        return res.status(500).json({
           success: false,
           error: error.message,
-        });
+          ok:"error in esewa initialization"       });
       }
 
 }
 
 
 export const completePayment=async (req, res) => {
-    const { data } = req.query; // Data received from eSewa's redirect
+    const { data } = req.query; 
   
     try {
-      // Verify payment with eSewa
       const paymentInfo = await verifyEsewaPayment(data);
   
       // Find the purchased item using the transaction UUID
-      const purchasedItemData = await purchasedProduct.findById(
+      const purchasedProductData = await purchasedProduct.findById(
         paymentInfo.response.transaction_uuid
       );
   
-      if (!purchasedItemData) {
+      if (!purchasedProductData) {
         return res.status(500).json({
           success: false,
           message: "Purchase not found",
@@ -71,7 +74,7 @@ export const completePayment=async (req, res) => {
         pidx: paymentInfo.decodedData.transaction_code,
         transactionId: paymentInfo.decodedData.transaction_code,
         productId: paymentInfo.response.transaction_uuid,
-        amount: purchasedItemData.totalPrice,
+        amount: purchasedProductData.totalPrice,
         dataFromVerificationReq: paymentInfo,
         apiQueryFromUser: req.query,
         paymentGateway: "esewa",

@@ -14,10 +14,7 @@ const productSchema = new mongoose.Schema({
         required: true,
         default: 0,
     },
-    averageRating: {
-        type: Number,
-        default: 0, // Stores only the avg rating
-      },
+  
     countInStock: {
         type: Number,
         required: true,

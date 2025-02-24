@@ -18,6 +18,7 @@ import { AdminProductPageModeProvider } from "./Context/AdminProductPageModeCont
 import { AdminMembershipStateProvider } from "./Context/AdminMembershipStateContext"
 import ProductDetailsPage from "./pages/ProductDetailsPage"
 import AddToCart from "./pages/User/UserDashBoardPages/AddToCart"
+import EsewaPaymentForm from "./pages/User/EsewaPaymentForm"
 export default function App() {
   return (
       <AdminProductPageModeProvider>
@@ -30,6 +31,7 @@ export default function App() {
       <Route path="/dashboard" element={<ProtectedRoutes/>}>
       <Route path="" element={<UserDashboard/>}/>
       </Route>
+      <Route path="/esewa" element={<EsewaPaymentForm/>}/>
 
         <Route path="/admindashboard" element={<AdminProtectedRoutes/>}>
         <Route

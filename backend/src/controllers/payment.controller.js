@@ -53,14 +53,18 @@ export const InitializeEsewa=async(req,res)=>{
 
 export const completePayment=async (req, res) => {
     const { data } = req.query; 
-  
+    console.log("a")
+    
+    
     try {
       const paymentInfo = await verifyEsewaPayment(data);
-  
+      console.log("b")
+      
       // Find the purchased item using the transaction UUID
       const purchasedProductData = await purchasedProduct.findById(
         paymentInfo.response.transaction_uuid
       );
+      console.log("c")
   
       if (!purchasedProductData) {
         return res.status(500).json({

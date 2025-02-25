@@ -12,6 +12,7 @@ const ProductDetailsPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [UserId, setUserId] = useState("");
   const [auth, setAuth] = useAuth();
   const navigate = useNavigate();
 
@@ -28,11 +29,7 @@ const ProductDetailsPage = () => {
     };
     fetchProduct();
   }, [id]);
-  const completePayment = async () => {
-    const res = await axios.get("http://localhost:8000/api/Product/addToCart");
-    console.log("ok")
-    console.log(res)
-  };
+ 
   const AddingToCart = async () => {
     try {
       const res = await axios.post(
@@ -59,13 +56,16 @@ const ProductDetailsPage = () => {
   const Buy = async (Product, quantity, totalPrice) => {
     try {
       const ProductId = Product._id;
+      const UserId=auth?.user?._id;
+      console.log("idddddd isssssssss",UserId)
       const res = await axios.post(
         "http://localhost:8000/api/Payment/initialize-esewa",
-        { ProductId, quantity, totalPrice },
+        { ProductId, quantity, totalPrice,UserId },
         {
           headers: { Authorization: auth?.token },
         }
       );
+      console.log(res.data)
       // transaction_uuid
 
       console.log(res);
@@ -91,7 +91,7 @@ const ProductDetailsPage = () => {
           { name: "product_delivery_charge", value: "0" },
           {
             name: "success_url",
-            value: "http://localhost:8000/api/Payment/complete-payment",
+            value: `http://localhost:8000/api/Payment/complete-payment/${UserId}`,
           },
           { name: "failure_url", value: "http://localhost:5173/" },
           { name: "signed_field_names", value: signed_field_names },

@@ -41,11 +41,13 @@ async function verifyEsewaPayment(encodedData) {
 
     console.log(hash);
     console.log(decodedData.signature);
+    console.log("okk");
     let reqOptions = {
       url: `${process.env.ESEWA_GATEWAY_URL}/api/epay/transaction/status/?product_code=${process.env.ESEWA_PRODUCT_CODE}&total_amount=${decodedData.total_amount}&transaction_uuid=${decodedData.transaction_uuid}`,
       method: "GET",
       headers: headersList,
     };
+    console.log("okk2");
     if (hash !== decodedData.signature) {
       throw { message: "Invalid Info", decodedData };
     }
@@ -57,6 +59,7 @@ async function verifyEsewaPayment(encodedData) {
     ) {
       throw { message: "Invalid Info", decodedData };
     }
+    console.log("okk3");
     return { response: response.data, decodedData };
   } catch (error) {
     throw error;

@@ -7,13 +7,13 @@ import {
   getEsewaPaymentHash,
   verifyEsewaPayment,
 } from "../utils/esewa.util.js";
+import AddToCartModel from "../model/addToCart.model.js";
 export const InitializeEsewa = async (req, res) => {
   try {
     const { ProductId, totalPrice, quantity, UserId } = req.body;
     // Validate item exists and the price matches
     const productData = await productModel.findOne({
-      _id: ProductId,
-      price: Number(totalPrice),
+      _id: ProductId
     });
 
     if (!productData) {
@@ -57,13 +57,7 @@ export const InitializeEsewa = async (req, res) => {
 
 export const completePayment = async (req, res) => {
   const { data } = req.query;
-  const { UserId } = req.params; // Extract id from URL parameter
-
-if (!mongoose.Types.ObjectId.isValid(UserId)) {
-    return res.status(400).json({ success: false, message: "Invalid UserId format" });
-}
-
-
+  const {id}=req.params
   console.log("a");
 
   try {
@@ -88,26 +82,33 @@ if (!mongoose.Types.ObjectId.isValid(UserId)) {
       pidx: paymentInfo.decodedData.transaction_code,
       transactionId: paymentInfo.decodedData.transaction_code,
       productId: paymentInfo.response.transaction_uuid,
-      UserId: new mongoose.Types.ObjectId(UserId),
       amount: purchasedProductData.totalPrice,
       dataFromVerificationReq: paymentInfo,
-      apiQueryFromUser: req.query,
+      apiQueryFromUser: req.query,  
       paymentGateway: "esewa",
       status: "success",
     });
+    console.log(paymentInfo.response.transaction_uuid);
 
     // Update the purchased item status to 'completed'
     await purchasedProduct.findByIdAndUpdate(
       paymentInfo.response.transaction_uuid,
       { $set: { status: "completed" } }
     );
+    console.log(id,"is id")
+    // Delete the corresponding cart item upon successful payment
+    const cartDeletionResult = await AddToCartModel.findOneAndDelete({
+      ProductId: id
+    });
+    console.log("Cart deletion result:", cartDeletionResult);
 
     // Respond with success message
     return res.json({
       success: true,
-      message: "Payment successful",
+      message: "Payment successful and cart item removed",
       paymentData,
     });
+   
   } catch (error) {
     res.status(500).json({
       success: false,

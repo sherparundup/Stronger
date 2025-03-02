@@ -15,6 +15,7 @@ const ProductDetailsPage = () => {
   const [UserId, setUserId] = useState("");
   const [auth, setAuth] = useAuth();
   const navigate = useNavigate();
+  const [ProductId,setProductId]=useState()
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -23,6 +24,8 @@ const ProductDetailsPage = () => {
           `http://localhost:8000/api/Product/getSingleProduct/${id}`
         );
         setProduct(data.product);
+        
+        setProductId(data.product._id)
       } catch (error) {
         console.error("Error fetching product:", error);
       }
@@ -91,7 +94,7 @@ const ProductDetailsPage = () => {
           { name: "product_delivery_charge", value: "0" },
           {
             name: "success_url",
-            value: `http://localhost:8000/api/Payment/complete-payment/${UserId}`,
+            value: `http://localhost:8000/api/Payment/complete-payment/${product._id}`,
           },
           { name: "failure_url", value: "http://localhost:5173/" },
           { name: "signed_field_names", value: signed_field_names },

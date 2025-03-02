@@ -1,10 +1,10 @@
-import productModel from "../model/product.model.js";
+import ProductModel from "../model/product.model.js";
 import fs from "fs";
 import { ApiResponse } from "../utils/util.api.response.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.util.js";
 import AddToCartModel from "../model/addToCart.model.js";
-import { error } from "console";
-
+import Payment from "../model/payment.model.js";
+import PurchasedProduct from "../model/purchasedProduct.model.js";
 // Add a new product
 
 export const addProduct = async (req, res) => {
@@ -20,7 +20,7 @@ export const addProduct = async (req, res) => {
     }
 
     // Check if the product already exists
-    const isThereSameProduct = await productModel.findOne({
+    const isThereSameProduct = await ProductModel.findOne({
       name: { $regex: new RegExp(`^${name}$`, "i") },
     });
     if (isThereSameProduct) {
@@ -30,7 +30,7 @@ export const addProduct = async (req, res) => {
     }
 
     // Initialize the product object
-    const newProduct = new productModel({
+    const newProduct = new ProductModel({
       name,
       description,
       price,
@@ -83,7 +83,7 @@ export const addProduct = async (req, res) => {
 // Get all products
 export const getAllProduct = async (req, res) => {
   try {
-    const allProduct = await productModel.find();
+    const allProduct = await ProductModel.find();
     return res
       .status(200)
       .json({
@@ -107,7 +107,7 @@ export const getAllProduct = async (req, res) => {
 export const getSingleProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const singleProduct = await productModel.findById(id);
+    const singleProduct = await ProductModel.findById(id);
 
     if (!singleProduct) {
       return res
@@ -138,7 +138,7 @@ export const getSingleProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const isThereProduct = await productModel.findById(id);
+    const isThereProduct = await ProductModel.findById(id);
 
     if (!isThereProduct) {
       return res
@@ -146,7 +146,7 @@ export const deleteProduct = async (req, res) => {
         .json({ success: false, message: "Product not found" });
     }
 
-    await productModel.findByIdAndDelete(id);
+    await ProductModel.findByIdAndDelete(id);
     return res
       .status(200)
       .json({ success: true, message: "Product deleted successfully" });
@@ -198,7 +198,7 @@ export const updateProduct = async (req, res) => {
         .json({ success: false, message: "Product category is required" });
 
     // Check if product exists
-    const isThereProduct = await productModel.findById(id);
+    const isThereProduct = await ProductModel.findById(id);
     if (!isThereProduct) {
       return res
         .status(404)
@@ -218,7 +218,7 @@ export const updateProduct = async (req, res) => {
     }
 
     // Update product after handling image
-    const updatedProduct = await productModel.findByIdAndUpdate(
+    const updatedProduct = await ProductModel.findByIdAndUpdate(
       id,
       {
         name,
@@ -256,7 +256,8 @@ export const addToCart = async (req, res) => {
   try {
     const { product, quantity } = req.body;
     const { _id } = req.user;
-    const productToBeAdded = await productModel.findById(product._id);
+
+    const productToBeAdded = await ProductModel.findById(product._id);
     if (!productToBeAdded) {
       return res
         .status(404)
@@ -293,6 +294,7 @@ export const getCart = async (req, res) => {
 export const removeCart=async(req,res)=>{
     try {
         const {id}=req.params;
+        
         const cartToBeDeleted=await AddToCartModel.findByIdAndDelete(id);
         if(!res){
             return res.status(404)
@@ -313,3 +315,19 @@ export const removeCart=async(req,res)=>{
         }
         
     }
+
+  export const getUserProduct=async(req,res)=>{
+    try {
+      const {id}=req.params;
+      if(!id){
+        return res.status(404).json(new ApiResponse(404,{},"no User"))
+      }
+      const BoughtProducts=await PurchasedProduct.find({UserId:id,status:"completed"}).populate("product")
+      return res.status(200).json(new ApiResponse(200,BoughtProducts,"Products"))
+      
+    } catch (error) {
+      return res.status(500).json(new ApiResponse(500,error.message,"okkk"))
+      
+    }
+
+  }

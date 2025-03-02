@@ -30,6 +30,8 @@ export default function App() {
       <Route path="/resetPassword" element={<ResetPassword/>}/>
       <Route path="/dashboard" element={<ProtectedRoutes/>}>
       <Route path="" element={<UserDashboard/>}/>
+      <Route path="/dashboard/MyCart" element={<AddToCart />}/>
+      
       </Route>
       <Route path="/esewa" element={<EsewaPaymentForm/>}/>
 

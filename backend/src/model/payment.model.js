@@ -9,12 +9,8 @@ const paymentSchema = new mongoose.Schema(
       ref: "purchasedProduct",
       required: true,
     },
-    UserId:{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-
-    },
+    
+  
     amount: { type: Number, required: true },
     dataFromVerificationReq: { type: Object },
     apiQueryFromUser: { type: Object },

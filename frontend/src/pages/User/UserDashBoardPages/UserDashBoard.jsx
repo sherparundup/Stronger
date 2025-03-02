@@ -3,6 +3,7 @@ import Layout from "../../../components/layout/Layout";
 import { useAuth } from "../../../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import AddToCart from "./AddToCart";
+import MyProductPage from "./MyProductPage";
 
 const UserDashBoard = () => {
   const [auth] = useAuth();
@@ -21,9 +22,10 @@ const UserDashBoard = () => {
       case "orders":
         return <UserOrders />;
       case "MyCart":
+        
         return <AddToCart />;
-      // case "membership":
-      //   return <MembershipPage />;
+      case "MyProduct":
+        return <MyProductPage />;
       // case "membership":
       //   return <MembershipPage />;
       // case "membership":
@@ -47,7 +49,7 @@ const UserDashBoard = () => {
               "Profile",
               "Settings",
               "MyCart",
-              "Products",
+              "MyProduct",
               "memberships",
               "coachingPlans",
               "Logout",

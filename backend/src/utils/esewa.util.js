@@ -57,7 +57,7 @@ async function verifyEsewaPayment(encodedData) {
       response.data.transaction_uuid !== decodedData.transaction_uuid ||
       Number(response.data.total_amount) !== Number(decodedData.total_amount)
     ) {
-      throw { message: "Invalid Info", decodedData };
+      throw { message: "Invalids Info", decodedData };
     }
     console.log("okk3");
     return { response: response.data, decodedData };

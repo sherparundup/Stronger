@@ -97,17 +97,23 @@ export const completePayment = async (req, res) => {
     );
     console.log(id,"is id")
     // Delete the corresponding cart item upon successful payment
+    const product=await productModel.findById(id)
+    const productName=product.name
+    console.log(productName.name)
     const cartDeletionResult = await AddToCartModel.findOneAndDelete({
       ProductId: id
     });
     console.log("Cart deletion result:", cartDeletionResult);
-
     // Respond with success message
-    return res.json({
-      success: true,
-      message: "Payment successful and cart item removed",
-      paymentData,
-    });
+    // return res.json({
+    //   success: true,
+    //   message: "Payment successful and cart item removed",
+    //   paymentData,
+    // });
+// In your completePayment endpoint after processing
+// Ensure the redirect URL includes the query parameter
+return res.redirect(`http://localhost:5173?payment=success&pro=${productName}`);
+
    
   } catch (error) {
     res.status(500).json({

@@ -5,6 +5,8 @@ import { uploadOnCloudinary } from "../utils/cloudinary.util.js";
 import AddToCartModel from "../model/addToCart.model.js";
 import Payment from "../model/payment.model.js";
 import PurchasedProduct from "../model/purchasedProduct.model.js";
+import mongoose from "mongoose";
+// import purchasedProduct from "../model/purchasedProduct.model.js";
 // Add a new product
 
 export const addProduct = async (req, res) => {
@@ -329,5 +331,31 @@ export const removeCart=async(req,res)=>{
       return res.status(500).json(new ApiResponse(500,error.message,"okkk"))
       
     }
-
+    
   }
+  
+  export const checkIfUserBoughtTheProduct = async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json(new ApiResponse(400, null, "Invalid User ID"));
+      }
+      
+      const purchasedProduct = await PurchasedProduct.findOne({
+        product:id,
+        status: "completed",
+        UserId:req.user._id
+      });
+  
+      if (!purchasedProduct) {
+        return res.status(404).json(new ApiResponse(404, null, "User has not bought this product"));
+      }
+  
+      return res.status(200).json(new ApiResponse(200, purchasedProduct, "User has bought this product"));
+      
+    } catch (error) {
+      return res.status(500).json(new ApiResponse(500, error.message, "Internal server error"));
+    }
+  };
+  

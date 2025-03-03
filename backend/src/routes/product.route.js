@@ -1,6 +1,5 @@
 import express from 'express';
-import { addProduct, addToCart, deleteProduct, getAllProduct, getCart, getSingleProduct, getUserProduct, removeCart, updateProduct } from '../controllers/product.controller.js';
-import ExpressFormidable from 'express-formidable';
+import { addProduct, addToCart, checkIfUserBoughtTheProduct, deleteProduct, getAllProduct, getCart, getSingleProduct, getUserProduct, removeCart, updateProduct } from '../controllers/product.controller.js';
 import { isAdmin, IsSignedIn } from '../middleware/auth.midlleWear.js';
 import { upload } from "../middleware/multter.middleware.js";
 
@@ -16,5 +15,6 @@ Router.post("/addToCart", IsSignedIn, addToCart);
 Router.get("/getCart", IsSignedIn, getCart);
 Router.delete("/removeCart/:id", IsSignedIn, removeCart);
 Router.get("/getUserProduct/:id", IsSignedIn, getUserProduct);
+Router.get("/checkIfUserBoughtTheProduct/:id", IsSignedIn, checkIfUserBoughtTheProduct);
     
 export default Router;

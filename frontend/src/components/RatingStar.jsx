@@ -1,20 +1,30 @@
-import React from "react";
-import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import React, { useState } from "react";
 
-const StarRating = ({ rating }) => {
-  const stars = [];
-
-  for (let i = 1; i <= 5; i++) {
-    if (rating >= i) {
-      stars.push(<FaStar key={i} className="text-yellow-400 text-2xl" />);
-    } else if (rating >= i - 0.5) {
-      stars.push(<FaStarHalfAlt key={i} className="text-yellow-400 text-2xl" />);
-    } else {
-      stars.push(<FaRegStar key={i} className="text-gray-400 text-2xl" />);
+const StarRating = ({ onRate }) => {
+  const [rating, setRating] = useState(0);
+  
+  // Function to handle rating change
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+    if (onRate) {
+      onRate(newRating); // Pass the rating to the parent component if onRate prop exists
     }
-  }
+  };
 
-  return <div className="flex">{stars}</div>;
+  return (
+    <div className="flex ">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <button
+          key={star}
+          onClick={() => handleRatingChange(star)}
+          className={`text-4xl ${star <= rating ? "text-yellow-500" : "text-gray-300"}`}
+        >
+          &#9733; {/* This is the star symbol */}
+        </button>
+      ))}
+      <div className="ml-2 mt-2 text-4xl font-semibold">{rating} / 5</div>
+    </div>
+  );
 };
 
 export default StarRating;

@@ -1,11 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Layout from "../components/layout/Layout";
 import { useAuth } from "../Context/AuthContext";
 import CoverImage from "../assets/CoverPage/Home.svg";
 import { motion } from "framer-motion"; // Import Framer Motion
+import { useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const HomePage = () => {
   const [auth, setAuth] = useAuth();
+  const location = useLocation();
+ useEffect(()=>{
+  console.log("Location Search:", location.search);  // Log the full query string
+  
+  // Get query parameters from the URL
+  const params = new URLSearchParams(location.search);
+  const paymentStatus = params.get("payment");
+  const product=params.get("productName")
+  console.log("Extracted Payment Status:", paymentStatus); // Log the extracted payment status
+
+  // If payment is successful, show the toast
+  if (paymentStatus === "success") {
+    toast.success(`product bought`);
+    
+    // Remove the query parameters after showing the toast
+    window.history.replaceState({}, document.title, location.pathname);
+  } 
+ },[[ location.pathname]])
+
 
   return (
     <Layout>

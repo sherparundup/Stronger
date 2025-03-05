@@ -3,12 +3,11 @@ import Header from './Header';
 import Footer from './Footer';
 import toast, { Toaster } from 'react-hot-toast';
 
-
 const Layout = (props) => {
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="h-svh">
+      <main className="flex-grow">
         <Toaster
           position="top-right"
           toastOptions={{

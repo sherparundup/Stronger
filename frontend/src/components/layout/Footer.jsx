@@ -6,7 +6,7 @@ import FAQ from '../Footer.components/FAQ'
 const Footer = () => {
   return (
     <>
-    <div className='mt-[100px]'>
+    <div className='flex-col'>
       <Contact/>
       <FAQ/>
 

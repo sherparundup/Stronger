@@ -43,7 +43,7 @@ const MyProductPage = () => {
               >
                 {/* Product Image */}
                 <img
-                  src={product.product.image.url}
+                  src={product.product.image?.url}
                   alt={product.product.name}
                   className="w-40 h-40 object-cover rounded-lg"
                 />

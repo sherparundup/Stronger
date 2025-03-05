@@ -22,6 +22,8 @@ const userTestimonialSchema = mongoose.Schema({
   message: {
     type: String,
   },
+}, {
+  timestamps: true,
 });
 
 const userTestimonialModel = mongoose.model(

@@ -5,6 +5,7 @@ import axios from "axios";
 import StarRating from "../components/RatingStar";
 import { useAuth } from "../Context/AuthContext";
 import toast from "react-hot-toast";
+import UserTestimonial from "../components/UserTestimonial";
 
 const ProductDetailsPage = () => {
   const { id } = useParams();
@@ -15,23 +16,42 @@ const ProductDetailsPage = () => {
   const [auth, setAuth] = useAuth();
   const [bought_product_or_no, setBought_product_or_no] = useState(false);
   const [rating, setRating] = useState(0);
+  const [avgRating, setAvgRating] = useState(0);
   const [review, setReview] = useState();
+  
   useEffect(() => {
+
     const fetchProduct = async () => {
       try {
         const { data } = await axios.get(
           `http://localhost:8000/api/Product/getSingleProduct/${id}`
         );
         setProduct(data.product);
-
-        // Check if the user has bought the product
+        
+        
+        // Check if the user has bought the product x
         if (auth?.token) {
           await checkIfUserBoughtTheProduct(data.product._id);
         }
+        const fetchAvgRating = async () => {
+          try {
+
+            const res = await axios.get(
+              `http://localhost:8000/api/UserTestimonial/AvgTestimonial/${product._id}`
+            );
+            console.log("Avg Rating Response:", res);
+            setAvgRating(res.data.data);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        await fetchAvgRating()
       } catch (error) {
-        console.error("Error fetching product:", error);
+        console.error("Errors fetching prodsuct:", error);
       }
     };
+   
+  
 
     const checkIfUserBoughtTheProduct = async (productId) => {
       try {
@@ -54,7 +74,7 @@ const ProductDetailsPage = () => {
     };
 
     fetchProduct();
-  }, [id, auth?.token]);
+  }, [id, auth?.token,]);
 
   const AddingToCart = async () => {
     try {
@@ -77,27 +97,30 @@ const ProductDetailsPage = () => {
       console.log(error.message);
     }
   };
-  const reviewSubmit = async() => {
+  const reviewSubmit = async () => {
     try {
-          const res =await axios.post("http://localhost:8000/api/UserTestimonial/addTestomonial",{
-            user:auth?.user,productId:id,rating,message:review
-
-          },{
-            headers:{
-              Authorization:auth?.token
-            }
-          })
-          if(res.data.success){
-            console.log("Sssssssss")
-            toast.success("review added")
-          }
-          else{
-            toast.error("review not added")
-
-          }
+      const res = await axios.post(
+        "http://localhost:8000/api/UserTestimonial/addTestomonial",
+        {
+          user: auth?.user,
+          productId: id,
+          rating,
+          message: review,
+        },
+        {
+          headers: {
+            Authorization: auth?.token,
+          },
+        }
+      );
+      if (res.data.success) {
+        console.log("Sssssssss");
+        toast.success("review added");
+      } else {
+        toast.error("review not added");
+      }
     } catch (error) {
-      console.log(error)
-      
+      console.log(error);
     }
   };
   const handleRatingChange = (newRating) => {
@@ -170,11 +193,11 @@ const ProductDetailsPage = () => {
     <Layout>
       {bought_product_or_no === true ? (
         <>
-          <div className="min-h-screen  max-w-full text-gray-800 flex flex-col lg:flex-row items-center lg:items-start px-6 py-12">
+          <div className="min-h-screen  max-w-full text-gray-800  flex-col lg:flex-row items-center lg:items-start px-6 py-12">
             <div className="w-[40px]">
               <button onClick={() => navigate("/ProductsPage")}>back</button>
             </div>
-            <div className="w-full flex-col mt-[100px]">
+            <div className="w-full  flex-col mt-[100px]">
               <div className="w-full flex">
                 <div className="w-full lg:w-1/3 flex justify-center">
                   <img
@@ -191,7 +214,7 @@ const ProductDetailsPage = () => {
                     Rs {product.price}
                   </p>
                   <div className="mt-[20px] ">
-                    <StarRating />
+                  <StarRating rating={avgRating} readOnly={true} />
                   </div>
                   <div className="mt-6 flex items-center space-x-6">
                     <p className="text-lg font-medium">Quantity:</p>
@@ -261,19 +284,25 @@ const ProductDetailsPage = () => {
                 </div>
               </div>
 
-              <div className="flex-col text-5xl font-bold mt-[50px]">
-                <div> product review of {product.name}</div>
-              </div>
+              <div className="flex flex-col text-5xl pb-24 font-bold mt-12 mb-20">
+  <div>Product review of {product.name}</div>
+  
+  {/* Testimonial container without forced scrolling */}
+  <div className="w-full border border-gray-300 rounded-lg p-4">
+    <UserTestimonial product={product} />
+  </div>
+</div>
+
             </div>
           </div>
         </>
       ) : (
         <>
-          <div className="min-h-screen text-gray-800 flex flex-col lg:flex-row items-center lg:items-start px-6 py-12">
+          <div className="min-h-screen  max-w-full text-gray-800  flex-col lg:flex-row items-center lg:items-start px-6 py-12">
             <div className="w-[40px]">
               <button onClick={() => navigate("/ProductsPage")}>back</button>
             </div>
-            <div className="w-full flex-col mt-[100px]">
+            <div className="w-full  flex-col mt-[100px]">
               <div className="w-full flex">
                 <div className="w-full lg:w-1/3 flex justify-center">
                   <img
@@ -289,8 +318,8 @@ const ProductDetailsPage = () => {
                   <p className="text-2xl text-gray-700 mt-3 font-semibold">
                     Rs {product.price}
                   </p>
-                  <div className="mt-[20px]">
-                    <StarRating />
+                  <div className="mt-[20px] ">
+                  <StarRating rating={avgRating} readOnly={true} />
                   </div>
                   <div className="mt-6 flex items-center space-x-6">
                     <p className="text-lg font-medium">Quantity:</p>
@@ -333,10 +362,17 @@ const ProductDetailsPage = () => {
               <div className="flex-col mt-[50px]">
                 <div className="text-2xl">{product.description}</div>
               </div>
-              <div className="flex-col text-5xl font-bold mt-[50px]">
-                <div> product review of {product.name}</div>
-                
-              </div>
+            
+
+              <div className="flex flex-col text-5xl pb-24 font-bold mt-12 mb-20">
+  <div>Product review of {product.name}</div>
+  
+  {/* Testimonial container without forced scrolling */}
+  <div className="w-full border border-gray-300 rounded-lg p-4">
+  <UserTestimonial product={product} />
+  </div>
+</div>
+
             </div>
           </div>
         </>

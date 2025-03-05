@@ -1,25 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const StarRating = ({ onRate }) => {
-  const [rating, setRating] = useState(0);
-  
-  // Function to handle rating change
+const StarRating = ({ rating: initialRating = 0, onRate, readOnly = false }) => {
+  const [rating, setRating] = useState(initialRating);
+
+  // Update local rating when the prop changes
+  useEffect(() => {
+    setRating(initialRating);
+  }, [initialRating]);
+
+  // Only update rating if not read-only
   const handleRatingChange = (newRating) => {
-    setRating(newRating);
-    if (onRate) {
-      onRate(newRating); // Pass the rating to the parent component if onRate prop exists
+    if (!readOnly && onRate) {
+      setRating(newRating);
+      onRate(newRating);
     }
   };
 
   return (
-    <div className="flex ">
+    <div className="flex">
       {[1, 2, 3, 4, 5].map((star) => (
         <button
           key={star}
           onClick={() => handleRatingChange(star)}
-          className={`text-4xl ${star <= rating ? "text-yellow-500" : "text-gray-300"}`}
+          disabled={readOnly} // Disable button if readOnly is true
+          className={`text-4xl ${star <= rating ? "text-yellow-500" : "text-gray-300"} ${
+            readOnly ? "cursor-default" : "cursor-pointer"
+          }`}
         >
-          &#9733; {/* This is the star symbol */}
+          &#9733;
         </button>
       ))}
       <div className="ml-2 mt-2 text-4xl font-semibold">{rating} / 5</div>

@@ -4,6 +4,7 @@ import { useAuth } from "../../../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import AddToCart from "./AddToCart";
 import MyProductPage from "./MyProductPage";
+import MyMembershipPage from "./MyMembershipPage";
 
 const UserDashBoard = () => {
   const [auth] = useAuth();
@@ -26,8 +27,8 @@ const UserDashBoard = () => {
         return <AddToCart />;
       case "MyProduct":
         return <MyProductPage />;
-      // case "membership":
-      //   return <MembershipPage />;
+      case "membership":
+        return <MyMembershipPage />;
       // case "membership":
       //   return <MembershipPage />;
     }
@@ -50,7 +51,7 @@ const UserDashBoard = () => {
               "Settings",
               "MyCart",
               "MyProduct",
-              "memberships",
+              "membership",
               "coachingPlans",
               "Logout",
             ].map((item, index) => (

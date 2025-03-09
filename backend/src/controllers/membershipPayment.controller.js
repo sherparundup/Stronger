@@ -1,42 +1,44 @@
-import Payment from "../model/payment.model.js";
-import productModel from "../model/product.model.js";
-import purchasedProduct from "../model/purchasedProduct.model.js";
-import PurchasedProduct from "../model/purchasedProduct.model.js";
-import mongoose from "mongoose";
+import Payment from "../model/payment.membership.model.js";
+import {
+  MembershipModel,
+  UserMembershipModel,
+} from "../model/membership.model.js";
 import {
   getEsewaPaymentHash,
   verifyEsewaPayment,
 } from "../utils/esewa.util.js";
-import AddToCartModel from "../model/addToCart.model.js";
-export const InitializeEsewa = async (req, res) => {
+
+export const  InitializeEsewa = async (req, res) => {
   try {
-    const { ProductId, totalPrice, quantity, UserId } = req.body;
+    const { Membership, totalPrice, UserId } = req.body;
+    console.log(Membership, totalPrice, UserId )
+    console.log("jsjsj")
+
     // Validate item exists and the price matches
-    const productData = await productModel.findOne({
-      _id: ProductId
+    const MembershipData = await MembershipModel.findOne({
+      _id: Membership,
     });
 
-    if (!productData) {
+    if (!MembershipData) {
       return res.status(400).send({
         success: false,
-        message: "Item not found or price mismatch.",
+        message: "Membership not found or price mismatch.",
       });
     }
     console.log("1");
     // Create a record for the purchase
-    const purchasedProductData = await PurchasedProduct.create({
-      product: ProductId,
+    const UserMembershipModelData = await UserMembershipModel.create({
+      membershipId: Membership,
       paymentMethod: "esewa",
-      totalPrice: totalPrice,
-      quantity,
-      UserId,
+      price: totalPrice,
+      userId:UserId,
     });
     console.log("2");
 
     // Initiate payment with eSewa
     const paymentInitiate = await getEsewaPaymentHash({
       amount: totalPrice,
-      transaction_uuid: purchasedProductData._id,
+      transaction_uuid: UserMembershipModelData._id,
     });
     console.log("3");
 
@@ -44,7 +46,7 @@ export const InitializeEsewa = async (req, res) => {
     return res.json({
       success: true,
       payment: paymentInitiate,
-      purchasedProductData,
+      UserMembershipModelData,
     });
   } catch (error) {
     return res.status(500).json({
@@ -57,7 +59,7 @@ export const InitializeEsewa = async (req, res) => {
 
 export const completePayment = async (req, res) => {
   const { data } = req.query;
-  const {id}=req.params
+  const { id } = req.params;
   console.log("a");
 
   try {
@@ -65,57 +67,57 @@ export const completePayment = async (req, res) => {
     console.log("b");
 
     // Find the purchased item using the transaction UUID
-    const purchasedProductData = await purchasedProduct.findById(
+    const UserMembershipModelData = await UserMembershipModel.findById(
       paymentInfo.response.transaction_uuid
     );
-    console.log("c");
-   
-
-    if (!purchasedProductData) {
+    console.log("cat");
+    console.log(id||"hi")
+    console.log(paymentInfo.response.transaction_uuid)
+    
+    if (!UserMembershipModelData) {
       return res.status(500).json({
         success: false,
         message: "Purchase not found",
       });
     }
-
+    
+    console.log("dog");
+    console.log(UserMembershipModelData.price);
     // Create a new payment record in the database
     const paymentData = await Payment.create({
       pidx: paymentInfo.decodedData.transaction_code,
       transactionId: paymentInfo.decodedData.transaction_code,
-      productId: paymentInfo.response.transaction_uuid,
-      amount: purchasedProductData.totalPrice,
+      MembershipId: paymentInfo.response.transaction_uuid,
+      amount: UserMembershipModelData.price,
       dataFromVerificationReq: paymentInfo,
-      apiQueryFromUser: req.query,  
+      apiQueryFromUser: req.query,
       paymentGateway: "esewa",
       status: "success",
     });
     console.log(paymentInfo.response.transaction_uuid);
 
     // Update the purchased item status to 'completed'
-    await purchasedProduct.findByIdAndUpdate(
+    await UserMembershipModel.findByIdAndUpdate(
       paymentInfo.response.transaction_uuid,
       { $set: { status: "completed" } }
     );
-    console.log(id,"is id")
+    console.log(id, "is id");
     // Delete the corresponding cart item upon successful payment
-    const product=await productModel.findById(id)
-    const productName=product.name
-    console.log(productName.name)
-    const cartDeletionResult = await AddToCartModel.findOneAndDelete({
-      ProductId: id
-    });
-    console.log("Cart deletion result:", cartDeletionResult);
+    const membership = await MembershipModel.findById(id);
+  
+    const membershipName = membership.MembershipName;
+  
     // Respond with success message
     // return res.json({
     //   success: true,
     //   message: "Payment successful and cart item removed",
     //   paymentData,
     // });
-// In your completePayment endpoint after processing
-// Ensure the redirect URL includes the query parameter
-return res.redirect(`http://localhost:5173?payment=success&pro=${productName}`);
-
-   
+    // In your completePayment endpoint after processing
+    // Ensure the redirect URL includes the query parameter
+    return res.redirect(
+      `http://localhost:5173?payment=success&pro=${membershipName}`
+    );
   } catch (error) {
     res.status(500).json({
       success: false,

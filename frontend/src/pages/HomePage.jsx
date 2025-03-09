@@ -71,7 +71,9 @@ const HomePage = () => {
         </motion.div>
       </div>
       <div className="bg-black flex-col">
-        <div className="flex bg-black text-white">Why choose Us? </div>
+        <div className="flex bg-black text-7xl pl-[80px] pt-[80px] text-white">Why choose Us? </div>
+        <div className="flex bg-black text-7xl pl-[80px] pt-[80px] text-white">We offer </div>
+        
       </div>
       </div>
 

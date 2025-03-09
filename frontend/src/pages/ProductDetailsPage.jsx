@@ -31,21 +31,9 @@ const ProductDetailsPage = () => {
         
         // Check if the user has bought the product x
         if (auth?.token) {
-          await checkIfUserBoughtTheProduct(data.product._id);
+          await checkIfUserBoughtTheProduct(data.product?._id);
         }
-        const fetchAvgRating = async () => {
-          try {
-
-            const res = await axios.get(
-              `http://localhost:8000/api/UserTestimonial/AvgTestimonial/${product._id}`
-            );
-            console.log("Avg Rating Response:", res);
-            setAvgRating(res.data.data);
-          } catch (error) {
-            console.log(error);
-          }
-        };
-        await fetchAvgRating()
+       
       } catch (error) {
         console.error("Errors fetching prodsuct:", error);
       }
@@ -75,7 +63,19 @@ const ProductDetailsPage = () => {
 
     fetchProduct();
   }, [id, auth?.token,]);
+  const fetchAvgRating = async () => {
+    try {
 
+      const res = await axios.get(
+        `http://localhost:8000/api/UserTestimonial/AvgTestimonial/${product._id}`
+      );
+      console.log("Avg Rating Response:", res);
+      setAvgRating(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+   fetchAvgRating()
   const AddingToCart = async () => {
     try {
       const res = await axios.post(

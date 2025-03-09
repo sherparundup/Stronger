@@ -13,6 +13,7 @@ const ProductsPage = () => {
       try {
         const { data } = await axios.get("http://localhost:8000/api/Product/getAllProduct");
         setProductData(data.products);
+        console.log(data.products);
       } catch (error) {
         console.log(error);
       }
@@ -46,12 +47,12 @@ const ProductsPage = () => {
             Supplements
           </button>
           <button
-            onClick={() => setCategory("Gym Gears")}
+            onClick={() => setCategory("GymGears")}
             className={`px-4 py-2 rounded-lg font-semibold ${
-              category === "Gym Gears" ? "bg-green-500" : "bg-gray-700"
+              category === "GymGears" ? "bg-green-500" : "bg-gray-700"
             }`}
           >
-            Gym Gears
+            GymGears
           </button>
         </div>
 

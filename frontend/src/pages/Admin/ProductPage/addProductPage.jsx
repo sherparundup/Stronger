@@ -144,7 +144,7 @@ const ProductForm = ({refreshProducts}) => {
                                 required
                             >
                                 <MenuItem value="Supplements">Supplements</MenuItem>
-                                <MenuItem value="Gym Gears">Gym Gears</MenuItem>
+                                <MenuItem value="GymGears">GymGears</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>

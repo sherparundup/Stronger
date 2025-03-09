@@ -41,59 +41,26 @@ const UserMembershipSchema = new mongoose.Schema({
     ref: 'Membership', // References Membership model
     required: true
   },
-  name: {
+  paymentMethod: {
     type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  contactNumber: {
-    type: String,
-    required: true,
-    },
-  duration: {
-    type: Number,
-    required: true,
-  },
-  startDate: {
-    type: Date,
-    default: Date.now,
-  },
-  endDate: {
-    type: Date,
+    enum: ["esewa", "cash"],
     required: true,
   },
   status: {
     type: String,
-    enum: ['Active', 'Expired', 'Pending'],
-    default: 'Pending',
+    enum: ["success", "pending", "failed"],
+    default: "pending",
   },
-  // Payment Details
-  paymentStatus: {
-    type: String,
-    enum: ['Pending', 'Paid', 'Failed'],
-    default: 'Pending',
-  },
-
   price: {
     type: Number,
     required: true,
   },
-  paymentMethod: {
-    type: String,
-    enum: ['Cash', 'Online'],
-    required: true,
-  },
-  transactionId: {
-    type: String,
-    required: true,
-  },
-  paymentDate: {
+  purchasedDate: {
     type: Date,
     default: Date.now,
   }
+},{
+  timestamps: true,
 });
 
 // Model Creation

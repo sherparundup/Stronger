@@ -3,6 +3,7 @@ import UserProfile from '../ProfilePage';
 import UserOrders from './UserDashBoardPages/UserOrders';
 import UserCart from '../../pages/User/UserCart';
 import MembershipPage from '../../pages/User/MembershipPage';
+import MyMembershipPage from './UserDashBoardPages/MyMembershipPage';
 
 const UserMenu = () => {
   const [selectedOption, setSelectedOption] = useState('profile'); // Default option
@@ -24,7 +25,7 @@ const UserMenu = () => {
       case 'cart':
         return <UserCart />;
       case 'membership':
-        return <MembershipPage />;
+        return <MyMembershipPage />;
       default:
         return <p>Select an option to see content</p>;
     }

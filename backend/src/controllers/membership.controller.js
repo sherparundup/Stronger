@@ -143,11 +143,14 @@ export const deleteMembership= async (req, res) => {
 export const singleMembership= async (req, res) => {
  try {
     const {_id}=req.params;
-    const memberShip= await MembershipModel.findById({_id});
-    if(!memberShip){
-        return res.json (new ApiResponse(404,null,"nosuch membership found"))
+    if(!_id){
+        return res.status(404).json(new ApiResponse(404,null,"no such Id found"))
     }
-    return res.json(new ApiResponse(200,memberShip,"memberwhip found"))
+    const memberShip= await MembershipModel.findById(_id);
+    if(!memberShip){
+        return res.status(404).json (new ApiResponse(404,null,"no such membership found"))
+    }
+    return res.status(200).json(new ApiResponse(200,memberShip,"memberwhip found"))
 
     
 } catch (error) {

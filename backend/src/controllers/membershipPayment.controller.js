@@ -7,12 +7,14 @@ import {
   getEsewaPaymentHash,
   verifyEsewaPayment,
 } from "../utils/esewa.util.js";
+import { ApiResponse } from "../utils/util.api.response.js";
+import emailSender from "../utils/nodemailor.util.js";
 
-export const  InitializeEsewa = async (req, res) => {
+export const InitializeEsewa = async (req, res) => {
   try {
     const { Membership, totalPrice, UserId } = req.body;
-    console.log(Membership, totalPrice, UserId )
-    console.log("jsjsj")
+    console.log(Membership, totalPrice, UserId);
+    console.log("jsjsj");
 
     // Validate item exists and the price matches
     const MembershipData = await MembershipModel.findOne({
@@ -31,7 +33,7 @@ export const  InitializeEsewa = async (req, res) => {
       membershipId: Membership,
       paymentMethod: "esewa",
       price: totalPrice,
-      userId:UserId,
+      userId: UserId,
     });
     console.log("2");
 
@@ -69,18 +71,19 @@ export const completePayment = async (req, res) => {
     // Find the purchased item using the transaction UUID
     const UserMembershipModelData = await UserMembershipModel.findById(
       paymentInfo.response.transaction_uuid
-    );
+    ).populate("userId")
+    .populate("membershipId")
     console.log("cat");
-    console.log(id||"hi")
-    console.log(paymentInfo.response.transaction_uuid)
-    
+    console.log(id || "hi");
+    console.log(paymentInfo.response.transaction_uuid);
+
     if (!UserMembershipModelData) {
       return res.status(500).json({
         success: false,
         message: "Purchase not found",
       });
     }
-    
+
     console.log("dog");
     console.log(UserMembershipModelData.price);
     // Create a new payment record in the database
@@ -99,14 +102,18 @@ export const completePayment = async (req, res) => {
     // Update the purchased item status to 'completed'
     await UserMembershipModel.findByIdAndUpdate(
       paymentInfo.response.transaction_uuid,
-      { $set: { status: "completed" } }
+      { $set: { status: "completed", membershipStatus: "active" } }
     );
     console.log(id, "is id");
     // Delete the corresponding cart item upon successful payment
     const membership = await MembershipModel.findById(id);
-  
+
     const membershipName = membership.MembershipName;
-  
+    const message=`your membership of ${UserMembershipModelData?.membershipId?.MembershipName} for ${UserMembershipModelData?.userId?.name} has been activated for  ${UserMembershipModelData?.membershipId?.duration} months at the price of   ${UserMembershipModelData?.membershipId?.price} `
+    const subject="membership payment";
+    const userEmail=UserMembershipModelData?.userId?.email;
+    await emailSender(userEmail,message,subject)
+
     // Respond with success message
     // return res.json({
     //   success: true,
@@ -124,5 +131,28 @@ export const completePayment = async (req, res) => {
       message: "An error occurred during payment verification",
       error: error.message,
     });
+  }
+};
+
+export const userMembership = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json(new ApiResponse(400, {}, "no id found"));
+      
+    }
+    const UserMembership = await UserMembershipModel.find({
+      userId: id,
+      status: "completed",
+      membershipStatus: "active",
+    }).populate("userId").populate("membershipId");
+    if (!UserMembership) {
+      return res.status(400).json(new ApiResponse(400, {}, "no id found"));
+    }
+
+    return res.status(200).json(new ApiResponse(200, UserMembership, "Membership found"));
+  } catch (error) {
+    return res.status(500).json(new ApiResponse(500, error.message, "something went wrong"));
+
   }
 };

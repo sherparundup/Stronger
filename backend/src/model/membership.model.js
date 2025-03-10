@@ -51,6 +51,11 @@ const UserMembershipSchema = new mongoose.Schema({
     enum: ["success", "pending", "failed"],
     default: "pending",
   },
+  membershipStatus: {
+    type: String,
+    enum: ["active", "inactive", "expired"],
+    default: "inactive",
+  },
   price: {
     type: Number,
     required: true,

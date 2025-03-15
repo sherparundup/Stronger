@@ -5,6 +5,8 @@ import CoverImage from "../assets/CoverPage/Home.svg";
 import { motion } from "framer-motion"; // Import Framer Motion
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
+import MembershipDisplay from "./User/membershipDisplay";
+import BuyMembership from "./BuyMembership";
 
 const HomePage = () => {
   const [auth, setAuth] = useAuth();
@@ -73,6 +75,7 @@ const HomePage = () => {
       <div className="bg-black flex-col">
         <div className="flex bg-black text-7xl pl-[80px] pt-[80px] text-white">Why choose Us? </div>
         <div className="flex bg-black text-7xl pl-[80px] pt-[80px] text-white">We offer </div>
+        <MembershipDisplay/>
         
       </div>
       </div>

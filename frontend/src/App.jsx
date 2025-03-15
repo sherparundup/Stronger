@@ -23,6 +23,7 @@ import BuyMembership from "./pages/BuyMembership"
 export default function App() {
   return (
       <AdminProductPageModeProvider>
+      
     <Routes>
       <Route path="/" element={<HomePage/>}/>
       <Route path="/register" element={<Register/>}/>

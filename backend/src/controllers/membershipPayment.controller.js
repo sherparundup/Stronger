@@ -138,21 +138,67 @@ export const userMembership = async (req, res) => {
   try {
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json(new ApiResponse(400, {}, "no id found"));
-      
+      return res.status(400).json(new ApiResponse(400, {}, "No ID found"));
     }
-    const UserMembership = await UserMembershipModel.find({
+
+    // Get all active, completed memberships for the user.
+    const userMemberships = await UserMembershipModel.find({
       userId: id,
       status: "completed",
       membershipStatus: "active",
-    }).populate("userId").populate("membershipId");
-    if (!UserMembership) {
-      return res.status(400).json(new ApiResponse(400, {}, "no id found"));
+    }).populate("userId").populate("membershipId"); // Ensure membershipId contains duration
+
+    if (!userMemberships || userMemberships.length === 0) {
+      return res.status(400).json(new ApiResponse(400, {}, "No active membership found"));
     }
 
-    return res.status(200).json(new ApiResponse(200, UserMembership, "Membership found"));
-  } catch (error) {
-    return res.status(500).json(new ApiResponse(500, error.message, "something went wrong"));
+    // Assuming only one active membership per user, get the first one.
+    const userMembership = userMemberships[0];
+    console.log(userMembership);
 
+    // Correctly extract the values from the membership document.
+    const membershipName = userMembership.membershipId?.MembershipName;
+    const userEmail = userMembership.userId?.email;
+    const userName = userMembership.userId?.name;
+
+    if (!userMembership.purchasedDate || !userMembership.membershipId?.duration) {
+      return res.status(400).json(new ApiResponse(400, {}, "Invalid membership data"));
+    }
+
+    // Get duration in days (assuming duration is in months)
+    const duration = userMembership.membershipId.duration * 30; 
+
+    // Convert purchasedDate to a Date object.
+    const purchasedDate = new Date(userMembership.purchasedDate);
+    if (isNaN(purchasedDate.getTime())) {
+      return res.status(400).json(new ApiResponse(400, {}, "Invalid purchased date"));
+    }
+
+    // Calculate membership end date.
+    const membershipEndDate = new Date(purchasedDate);
+    membershipEndDate.setDate(membershipEndDate.getDate() + duration);
+
+    // Calculate remaining days.
+    const daysLeft = (membershipEndDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+    console.log("Membership End Date:", membershipEndDate);
+    console.log("Days Left:", daysLeft);
+
+    const subject = `Reminder for gym membership`;
+
+    // Send reminder emails based on remaining days.
+    if (daysLeft < 7 && daysLeft >= 0) {
+      const message = `Hello ${userName}, this is just a reminder that your membership (${membershipName}) has only 7 days left.`;
+      await emailSender(userEmail, subject, message);
+    } else if (daysLeft < 0) {
+      const message = `Hello ${userName}, this is just a reminder that your membership (${membershipName}) has ended.`;
+      await emailSender(userEmail, subject, message);
+    } else {
+      console.log(`Days left: ${Math.ceil(daysLeft)}`);
+    }
+
+    return res.status(200).json(new ApiResponse(200, { userMemberships, daysLeft }, "Membership found"));
+  } catch (error) {
+    return res.status(500).json(new ApiResponse(500, error.message, "Something went wrong"));
   }
 };
+

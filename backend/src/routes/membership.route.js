@@ -13,6 +13,7 @@ Router.get("/singleMembership/:_id",IsSignedIn,singleMembership);
 
 Router.post("/joinMembership/:_id",IsSignedIn,joinMembership)
 Router.get("/userMembership/:id",userMembership)
+
 Router.post("/joinMembership/Payment/initialize-esewa",IsSignedIn,InitializeEsewa)
 Router.get("/joinMembership/Payment/complete-payment/:id",completePayment)
 

@@ -100,6 +100,14 @@ const AddToCart = () => {
     }
   };
 
+  const setQuantityForItem = (itemId, newQuantity) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item._id === itemId ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
   return (
     <div className="w-full min-h-screen flex flex-col items-center bg-gray-100 p-8">
       <div className="w-full flex">
@@ -112,9 +120,9 @@ const AddToCart = () => {
       </h1>
       {cart.length > 0 ? (
         <div className="w-full max-w-3xl space-y-6">
-          {cart.map((item, key) => (
+          {cart.map((item) => (
             <div
-              key={key}
+              key={item._id}
               className="flex items-center bg-white p-5 rounded-lg shadow-lg hover:shadow-2xl transition duration-300"
             >
               <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden border">
@@ -132,9 +140,23 @@ const AddToCart = () => {
                   <p className="text-gray-600 text-lg">
                     Price: <span className="font-semibold">${item?.ProductId?.price}</span>
                   </p>
-                  <p className="text-gray-600 text-lg">
-                    Quantity: <span className="font-semibold">{item?.quantity}</span>
-                  </p>
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => setQuantityForItem(item._id, item.quantity + 1)}
+                      className="px-2 py-1 text-white bg-green-500 rounded"
+                    >
+                      +
+                    </button>
+                    <p className="text-gray-600 text-lg mx-4">
+                      Quantity: <span className="font-semibold">{item.quantity || 1}</span>
+                    </p>
+                    <button
+                      onClick={() => setQuantityForItem(item._id, item.quantity - 1)}
+                      className="px-2 py-1 text-white bg-red-500 rounded"
+                    >
+                      -
+                    </button>
+                  </div>
                 </div>
               </div>
               <div className="flex justify-end mt-4">

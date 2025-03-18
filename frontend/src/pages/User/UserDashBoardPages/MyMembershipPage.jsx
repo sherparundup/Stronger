@@ -5,14 +5,13 @@ import { useAuth } from '../../../Context/AuthContext';
 const MyMembershipPage = () => {
   const [membershipData, setMembershipData] = useState(null);
   const [auth] = useAuth();
-  const [remainingTime, setRemainingTime] = useState({});
   const [loading, setLoading] = useState(true);
 
   // Function to calculate remaining time for a membership.
-  const calculateRemainingTime = (purchasedDate, membershipStatus) => {
+  const calculateRemainingTime = (purchasedDate, membershipStatus, durationInMonths) => {
     const purchaseDate = new Date(purchasedDate);
     const expiryDate = new Date(purchaseDate);
-    expiryDate.setMonth(expiryDate.getMonth() + 1); // Assuming 1-month membership
+    expiryDate.setMonth(expiryDate.getMonth() + durationInMonths); // Adjusting by dynamic duration
     const currentTime = new Date();
     const timeDiff = expiryDate - currentTime;
 
@@ -46,9 +45,7 @@ const MyMembershipPage = () => {
         console.log("Full response:", res.data);
 
         if (res.data.success) {
-          // res.data.data contains { userMemberships: [...], daysLeft: ... }
           setMembershipData(res.data.data);
-          console.log("Membership count:", res.data.data.userMemberships.length);
         }
       } catch (error) {
         console.error("Error fetching membership:", error.message);
@@ -62,30 +59,47 @@ const MyMembershipPage = () => {
     }
   }, [auth]);
 
-  // Update remaining time every second once membershipData is loaded.
-  useEffect(() => {
-    if (!membershipData) return;
-
-    const updateTimers = () => {
-      const timeData = {};
-      membershipData.userMemberships.forEach((membership) => {
-        timeData[membership._id] = calculateRemainingTime(
-          membership.purchasedDate,
-          membership.membershipStatus
-        );
-      });
-      setRemainingTime(timeData);
-    };
-
-    // Update immediately.
-    updateTimers();
-
+  // Function to update the timer for each membership
+  const startTimer = (membershipId, purchasedDate, membershipStatus, durationInMonths) => {
     const interval = setInterval(() => {
-      updateTimers();
+      const remainingTime = calculateRemainingTime(purchasedDate, membershipStatus, durationInMonths);
+
+      setMembershipData((prevData) => {
+        // Check if data is already updated to prevent unnecessary re-renders
+        const updatedMemberships = prevData.userMemberships.map((membership) => {
+          if (membership._id === membershipId && membership.remainingTime !== remainingTime) {
+            return {
+              ...membership,
+              remainingTime: remainingTime, // Update remaining time only if it's different
+            };
+          }
+          return membership;
+        });
+        return { ...prevData, userMemberships: updatedMemberships };
+      });
     }, 1000);
 
-    // Cleanup on component unmount.
-    return () => clearInterval(interval);
+    // Clear interval when the component is unmounted or membership data is removed
+    return interval;
+  };
+
+  // Start a timer for each membership
+  useEffect(() => {
+    if (membershipData) {
+      const intervals = [];
+      membershipData.userMemberships.forEach((membership) => {
+        if (membership.membershipStatus === 'active') {
+          const durationInMonths = membership.membershipId.duration; // assuming the duration is in months
+          const interval = startTimer(membership._id, membership.purchasedDate, membership.membershipStatus, durationInMonths);
+          intervals.push(interval); // Track all intervals
+        }
+      });
+
+      // Cleanup intervals when the component unmounts
+      return () => {
+        intervals.forEach(clearInterval); // Clear all intervals
+      };
+    }
   }, [membershipData]);
 
   if (loading) {
@@ -114,9 +128,9 @@ const MyMembershipPage = () => {
                 <h2 className="text-lg font-semibold">{membership.userId.name}</h2>
                 <p className="text-gray-500">{membership.membershipId.MembershipName}</p>
                 <p className="text-gray-700">{membership.membershipId.description}</p>
-                {remainingTime[membership._id] && (
-                  <p className={`${remainingTime[membership._id].color} font-semibold`}>
-                    {remainingTime[membership._id].message}
+                {membership.remainingTime && (
+                  <p className={`${membership.remainingTime.color} font-semibold`}>
+                    {membership.remainingTime.message}
                   </p>
                 )}
               </div>

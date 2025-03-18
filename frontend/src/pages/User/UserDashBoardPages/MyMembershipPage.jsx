@@ -65,7 +65,7 @@ const MyMembershipPage = () => {
       const remainingTime = calculateRemainingTime(purchasedDate, membershipStatus, durationInMonths);
 
       setMembershipData((prevData) => {
-        // Check if data is already updated to prevent unnecessary re-renders
+        if (!prevData) return prevData; // Prevents errors when prevData is null
         const updatedMemberships = prevData.userMemberships.map((membership) => {
           if (membership._id === membershipId && membership.remainingTime !== remainingTime) {
             return {
@@ -89,7 +89,7 @@ const MyMembershipPage = () => {
       const intervals = [];
       membershipData.userMemberships.forEach((membership) => {
         if (membership.membershipStatus === 'active') {
-          const durationInMonths = membership.membershipId.duration; // assuming the duration is in months
+          const durationInMonths = membership.duration; // FIX: Use dynamic duration from API response
           const interval = startTimer(membership._id, membership.purchasedDate, membership.membershipStatus, durationInMonths);
           intervals.push(interval); // Track all intervals
         }
@@ -97,7 +97,7 @@ const MyMembershipPage = () => {
 
       // Cleanup intervals when the component unmounts
       return () => {
-        intervals.forEach(clearInterval); // Clear all intervals
+        intervals.forEach(clearInterval);
       };
     }
   }, [membershipData]);

@@ -41,6 +41,10 @@ const UserMembershipSchema = new mongoose.Schema({
     ref: 'Membership', // References Membership model
     required: true
   },
+  duration: {
+    type: Number,   
+    required: true,
+  },
   paymentMethod: {
     type: String,
     enum: ["esewa", "cash"],

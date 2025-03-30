@@ -154,8 +154,21 @@ export const singleMembership= async (req, res) => {
 
     
 } catch (error) {
-     return (new ApiResponse(500,error.message,"something went wrong"))
+     return res.status(500).json( new ApiResponse(500,error.message,"something went wrong"))
     
  }   
 }
 
+export const getActiveUserMembers=async(req,res)=>{
+
+    try {
+        const allMembers=await UserMembershipModel.find({
+            membershipStatus:"active"
+        });
+        res.status(200).json(new ApiResponse(200,allMembers,"all members"))
+        
+    } catch (error) {
+        
+        res.status(500).json(new ApiResponse(200,error,"something went wrong"))
+    }
+}

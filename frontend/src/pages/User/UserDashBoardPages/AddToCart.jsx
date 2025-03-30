@@ -52,19 +52,16 @@ const AddToCart = () => {
       );
       console.log("Initialize Response:", res.data);
       
-      // Extract required details for eSewa
       const signature = res.data.payment.signature;
       const signed_field_names = res.data.payment.signed_field_names;
       const transaction_uuid = res.data.purchasedProductData._id;
       
       if (res.data.success) {
-        // Dynamically create a form element for eSewa payment
         console.log("Payment initialization successful. Redirecting to eSewa...");
         const form = document.createElement("form");
         form.method = "POST";
         form.action = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
 
-        // Create hidden inputs for all required fields
         const fields = [
           { name: "amount", value: totalPrice },
           { name: "tax_amount", value: "0" },
@@ -90,7 +87,6 @@ const AddToCart = () => {
           form.appendChild(input);
         });
 
-        // Append the form to the body and submit it
         document.body.appendChild(form);
         form.submit();
       }
@@ -108,6 +104,12 @@ const AddToCart = () => {
     );
   };
 
+  // Calculate total price for the entire cart (optional global total)
+  const totalCartPrice = cart.reduce(
+    (acc, item) => acc + (item?.ProductId?.price || 0) * (item.quantity || 1),
+    0
+  );
+
   return (
     <div className="w-full min-h-screen flex flex-col items-center bg-gray-100 p-8">
       <div className="w-full flex">
@@ -118,6 +120,13 @@ const AddToCart = () => {
       <h1 className="text-black font-extrabold text-5xl mb-8">
         {auth?.user?.name}'s Cart
       </h1>
+      
+      <div className="mb-6 p-4 bg-white rounded-lg shadow-lg">
+        <h2 className="text-2xl font-semibold">
+          Total Price: ${totalCartPrice.toFixed(2)}
+        </h2>
+      </div>
+      
       {cart.length > 0 ? (
         <div className="w-full max-w-3xl space-y-6">
           {cart.map((item) => (
@@ -142,21 +151,25 @@ const AddToCart = () => {
                   </p>
                   <div className="flex items-center">
                     <button
-                      onClick={() => setQuantityForItem(item._id, item.quantity + 1)}
-                      className="px-2 py-1 text-white bg-green-500 rounded"
-                    >
-                      +
-                    </button>
-                    <p className="text-gray-600 text-lg mx-4">
-                      Quantity: <span className="font-semibold">{item.quantity || 1}</span>
-                    </p>
-                    <button
                       onClick={() => setQuantityForItem(item._id, item.quantity - 1)}
                       className="px-2 py-1 text-white bg-red-500 rounded"
                     >
                       -
                     </button>
+                    <p className="text-gray-600 text-lg mx-4">
+                      Quantity: <span className="font-semibold">{item.quantity || 1}</span>
+                    </p>
+                    <button
+                      onClick={() => setQuantityForItem(item._id, item.quantity + 1)}
+                      className="px-2 py-1 text-white bg-green-500 rounded"
+                    >
+                      +
+                    </button>
                   </div>
+                </div>
+                {/* Display total price for each cart item instead of "hello" */}
+                <div className="bg-black text-white flex justify-normal p-2">
+                  ${ (item?.ProductId?.price * (item.quantity || 1)).toFixed(2) }
                 </div>
               </div>
               <div className="flex justify-end mt-4">
@@ -179,7 +192,9 @@ const AddToCart = () => {
           ))}
         </div>
       ) : (
-        <p className="text-3xl text-gray-500 mt-10">Your cart is empty. Add some products!</p>
+        <p className="text-3xl text-gray-500 mt-10">
+          Your cart is empty. Add some products!
+        </p>
       )}
     </div>
   );

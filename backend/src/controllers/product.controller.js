@@ -6,6 +6,7 @@ import AddToCartModel from "../model/addToCart.model.js";
 import Payment from "../model/payment.model.js";
 import PurchasedProduct from "../model/purchasedProduct.model.js";
 import mongoose from "mongoose";
+import purchasedProduct from "../model/purchasedProduct.model.js";
 // import purchasedProduct from "../model/purchasedProduct.model.js";
 // Add a new product
 
@@ -359,3 +360,17 @@ export const removeCart=async(req,res)=>{
     }
   };
   
+  export const BoughtProduct=async(req,res)=>{
+    
+    try {
+      const allBoughtProduct=await PurchasedProduct.find({
+        status:"completed"
+
+      })
+      return res.status(200).json(new ApiResponse(200,allBoughtProduct,"all products"))
+      
+    } catch (error) {
+      return res.status(500).json(new ApiResponse(500, error.message, "Internal server error"));
+      
+    }
+  }

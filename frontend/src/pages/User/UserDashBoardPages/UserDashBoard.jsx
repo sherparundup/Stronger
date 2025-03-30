@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import AddToCart from "./AddToCart";
 import MyProductPage from "./MyProductPage";
 import MyMembershipPage from "./MyMembershipPage";
+import ProfilePage from "./ProfilePage";
+
 
 const UserDashBoard = () => {
   const [auth] = useAuth();
@@ -19,7 +21,7 @@ const UserDashBoard = () => {
   const renderContent = () => {
     switch (selectedOption) {
       case "Profile":
-        return <UserProfile />;
+        return <ProfilePage />;
       case "orders":
         return <UserOrders />;
       case "MyCart":

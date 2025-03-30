@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../Context/AuthContext';
 import AdminUsers from '../../pages/Admin/AdminUsers';
-import CatagoryPages from '../../pages/admin/CatagoryPages';
+import CatagoryPages from '../../pages/Admin/AdmindashboardPage.jsx/dashboardPage';
 import ProductPage from '../../pages/Admin/ProductPage/ProductPages';
 import MembershipPage from '../../pages/Admin/MembershipPage/MembershipPage';
+import UserMembership from '../../pages/Admin/MembershipPage/UserMembership';
 
 const AdminMenu = () => {
   const [selectedOption, setSelectedOption] = useState('catagory'); // Default option
@@ -11,16 +12,17 @@ const AdminMenu = () => {
   
 
   const options = [
-    { name: 'catagory', label: 'Category' },
+    { name: 'dashboard', label: 'Dashboard' },
     { name: 'Products', label: 'Products' },
     { name: 'Users', label: 'Users' },
-    {name:'membership',label:"Membership"}
+    {name:'membership',label:"Membership"},
+    {name:'userMebership',label:"UserMebership"}
   ];
 
   // Dynamic rendering based on selectedOption
   const renderContent = () => {
     switch (selectedOption) {
-      case 'catagory':
+      case 'dashboard':
         return <CatagoryPages />;
       case 'Products':
         return <ProductPage />;
@@ -28,6 +30,8 @@ const AdminMenu = () => {
         return <AdminUsers />;
       case 'membership':
         return <MembershipPage/>;
+      case 'userMebership':
+        return <UserMembership/>;
       default:
         return <p>Select an option to see content</p>;
     }
@@ -58,7 +62,7 @@ const AdminMenu = () => {
 
         {/* Right Column: Dynamic Content */}
         <div
-          className="bg-white rounded-lg shadow-md p-6 flex-grow lg:w-3/4 overflow-y-auto"
+          className="bg-white min-h-screen rounded-lg shadow-md p-6 flex-grow lg:w-3/4 overflow-y-auto"
           style={{ maxHeight: '80vh' }} // Makes the content area scrollable
         >
           <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>

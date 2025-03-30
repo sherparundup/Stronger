@@ -9,6 +9,7 @@ import {
 } from "../utils/esewa.util.js";
 import { ApiResponse } from "../utils/util.api.response.js";
 import emailSender from "../utils/nodemailor.util.js";
+import { userModel } from "../model/user.model.js";
 
 export const InitializeEsewa = async (req, res) => {
   try {
@@ -132,14 +133,15 @@ export const completePayment = async (req, res) => {
       console.log("Existing membership found:", existingMembership);
 
       const membership = await MembershipModel.findById(id);
-      const prevDuration = membership.duration;
+      const prevDuration = existingMembership.duration;
 
       console.log(prevDuration, "Previous Duration");
-
+      
       // Add the previous duration to the new duration (in months)
       const updatedDuration =
-        existingMembership.membershipId.duration + prevDuration;
-
+      existingMembership.membershipId.duration + prevDuration;
+      
+      console.log(updatedDuration, "updatedDuration");
       // Update the existing membership record with the new expiration date.
       const ok = await UserMembershipModel.findOneAndUpdate(
         { membershipId: existingMembership.membershipId._id }, 
@@ -163,7 +165,15 @@ export const completePayment = async (req, res) => {
     }
 
     console.log(id, "is id");
-
+    const enablingIsMember = await userModel.findByIdAndUpdate(
+      UserMembershipModelData.userId, 
+      { isMember: true }, 
+      { new: true } 
+  );
+  
+    if(enablingIsMember){
+      console.log("mebership status is active")
+    }
     // 6. Prepare and send an email notification to the user about the activated membership.
     const membershipName = UserMembershipModelData.membershipId.MembershipName;
     const message = `Your membership of ${UserMembershipModelData.membershipId.MembershipName} for ${UserMembershipModelData.userId.name} has been activated for ${UserMembershipModelData.membershipId.duration} months at the price of ${UserMembershipModelData.membershipId.price}`;
@@ -251,7 +261,13 @@ export const userMembership = async (req, res) => {
       } else if (daysLeft < 0) {
         const message = `Hello ${userName}, this is just a reminder that your membership (${membershipName}) has ended.`;
         await emailSender(userEmail, subject, message);
+        await userModel.findByIdAndUpdate(
+          userId, 
+          { isMember: false }, 
+          { new: true }  
+      );
         membershipReminders.push({ membershipName, daysLeft, message });
+        
       } else {
         console.log(
           `Membership: ${membershipName} - Days left: ${Math.ceil(daysLeft)}`

@@ -30,20 +30,19 @@ const MembershipDisplay = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center bg-gray-50 py-10">
+    <div className="flex flex-col items-center bg-black text-white py-10">
     
-      <div className="flex items-center w-full px-10 justify-between mb-8">
-       
-
+      <div className="flex items-center w-full px-[80px] justify-between mb-8">
         {/* Button Container */}
         <div className="flex justify-end gap-4">
-          <div className="border border-gray-300 shadow-lg rounded-lg flex gap-x-4 py-2 px-8 bg-white">
+            <div className="text-3xl flex justify-center items-center">We offer </div>
+          <div className="border border-gray-700 shadow-lg rounded-lg flex gap-x-4 py-2 px-8 bg-gray-800">
             <button
               onClick={() => setMode("Standard")}
-              className={`px-6 py-2 font-bold text-gray-800 rounded-md shadow-md transition-all duration-300 ${
+              className={`px-6 py-2 font-bold text-gray-300 rounded-md shadow-md transition-all duration-300 ${
                 mode === "Standard"
-                  ? "bg-gray-200 hover:bg-gray-300"
-                  : "hover:bg-gray-100"
+                  ? "bg-gray-700 hover:bg-gray-600"
+                  : "hover:bg-gray-600"
               }`}
             >
               Standard
@@ -72,21 +71,21 @@ const MembershipDisplay = () => {
               .map((membership) => (
                 <li
                   key={membership._id}
-                  className="p-6 border rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 w-64 h-96 flex flex-col space-y-4"
+                  className="p-6 border rounded-lg shadow-md bg-gray-800 hover:shadow-xl transition-shadow duration-300 w-64 h-96 flex flex-col space-y-4"
                 >
                   <div>
-                    <h2 className="text-2xl font-semibold text-gray-800">{membership.name}</h2>
-                    <p className="text-gray-700 mt-1">
+                    <h2 className="text-2xl font-semibold text-white">{membership.name}</h2>
+                    <p className="text-gray-400 mt-1">
                       Duration: {membership.duration} months
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-900 font-bold text-xl">
+                    <p className="text-gray-300 font-bold text-xl">
                       Price: ${membership.price}
                     </p>
                   </div>
                   <div className="flex-1">
-                    <p className="text-gray-800">Description: {membership.description}</p>
+                    <p className="text-gray-400">Description: {membership.description}</p>
                   </div>
                   {/* Buy Button */}
                   <button
@@ -99,7 +98,7 @@ const MembershipDisplay = () => {
               ))}
           </ul>
         ) : (
-          <p className="text-gray-600 mt-4">No memberships available.</p>
+          <p className="text-gray-400 mt-4">No memberships available.</p>
         )}
       </div>
     </div>

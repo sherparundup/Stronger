@@ -100,6 +100,18 @@ export const completePayment = async (req, res) => {
     // Delete the corresponding cart item upon successful payment
     const product=await productModel.findById(id)
     const productName=product.name
+    const decreaseStock = await productModel.findByIdAndUpdate(
+      id,
+      {
+        $inc: { countInStock: -purchasedProductData.quantity }
+      },
+      { new: true }
+    );
+    
+   
+    
+    console.log("Stock updated successfully:", decreaseStock);
+
     console.log(productName.name)
     const cartDeletionResult = await AddToCartModel.findOneAndDelete({
       ProductId: id

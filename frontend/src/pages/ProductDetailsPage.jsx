@@ -13,6 +13,8 @@ const ProductDetailsPage = () => {
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [stock, setStock] = useState(1);
+
   const [auth, setAuth] = useAuth();
   const [bought_product_or_no, setBought_product_or_no] = useState(false);
   const [rating, setRating] = useState(0);
@@ -27,6 +29,7 @@ const ProductDetailsPage = () => {
           `http://localhost:8000/api/Product/getSingleProduct/${id}`
         );
         setProduct(data.product);
+        setStock(product.countInStock)
         
         
         // Check if the user has bought the product x
@@ -97,6 +100,15 @@ const ProductDetailsPage = () => {
       console.log(error.message);
     }
   };
+ const incrimentQuantity=()=>{
+  if(stock>quantity){
+
+    setQuantity(quantity + 1)
+  }
+  else{
+    toast.error("please order less than the stock")
+  }
+ }
   const reviewSubmit = async () => {
     try {
       const res = await axios.post(
@@ -229,13 +241,14 @@ const ProductDetailsPage = () => {
                       </button>
                       <span className="text-xl font-semibold">{quantity}</span>
                       <button
-                        onClick={() => setQuantity(quantity + 1)}
+                        onClick={() => incrimentQuantity()}
                         className="bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded-lg text-gray-800 text-xl font-bold"
                       >
                         +
                       </button>
                     </div>
                   </div>
+                  <div className="flex">In stock: {stock}</div>
                   <div className="flex gap-x-[20px]">
                     <button
                       onClick={() =>

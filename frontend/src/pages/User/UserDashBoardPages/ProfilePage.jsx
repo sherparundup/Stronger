@@ -1,8 +1,9 @@
 import React from 'react'
+import Steps from '../../../components/Steps'
 
 const ProfilePage = () => {
   return (
-    <div>ProfilePage</div>
+    <div><Steps/></div>
   )
 }
 

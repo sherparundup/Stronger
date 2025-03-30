@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import MembershipDisplay from "./User/membershipDisplay";
 import BuyMembership from "./BuyMembership";
+import Offers from "./User/Offers";
 
 const HomePage = () => {
   const [auth, setAuth] = useAuth();
@@ -49,7 +50,7 @@ const HomePage = () => {
           transition={{ duration: 1, ease: "easeOut" }} // Smooth effect
           className="absolute inset-0 flex items-center justify-start ml-[70px] mb-[400px]"
         >
-          <div className="flex-col">
+          <div className="flex-col ">
             {/* First Line */}
             <motion.h1
               initial={{ opacity: 0, x: -50 }} // Slide-in from left
@@ -73,9 +74,11 @@ const HomePage = () => {
         </motion.div>
       </div>
       <div className="bg-black flex-col">
-        <div className="flex bg-black text-7xl pl-[80px] pt-[80px] text-white">Why choose Us? </div>
-        <div className="flex bg-black text-7xl pl-[80px] pt-[80px] text-white">We offer </div>
-        <MembershipDisplay/>
+        <div className="bg-white flex py-[100px]">
+
+        <Offers/>
+        </div>
+        {/* <MembershipDisplay/> */}
         
       </div>
       </div>

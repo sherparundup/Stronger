@@ -23,7 +23,7 @@ const UserSchema = new mongoose.Schema({
     image:{
         url:{
             type:String,
-            required: true
+            
         }
     },
     contactNumber: {  // <-- This is the number field

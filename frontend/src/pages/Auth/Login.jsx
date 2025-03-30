@@ -19,7 +19,7 @@ const Login = () => {
       
         
         });
-      if (res.status === 200) {
+      if (res.status === 200 ) {
         toast.success('Successfully logged in!');
         if (res.data.success === true) {
           console.log("onichan")
@@ -30,8 +30,20 @@ const Login = () => {
           token: res.data.token
         })
         localStorage.setItem("auth", (JSON.stringify(res.data)))
+        if(res.data?.user?.role=="user"){
+          navigate('/'); 
+          
+        }
+        else if(res.data?.user?.role=="admin"){
+          navigate('/admindashboard'); 
 
-        navigate('/'); // Redirect to dashboard or desired page
+
+        }
+        else if(res.data?.user?.role=="coach"){
+          navigate('/'); 
+
+
+        }
       }
     } catch (error) {
       console.error('Login error:', error);

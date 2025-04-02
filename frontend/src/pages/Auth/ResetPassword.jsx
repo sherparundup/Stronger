@@ -55,7 +55,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <Layout>
+    <>
       <Container maxWidth="sm">
         <Box
           sx={{
@@ -111,7 +111,7 @@ const ResetPassword = () => {
           </Card>
         </Box>
       </Container>
-    </Layout>
+    </>
   );
 };
 

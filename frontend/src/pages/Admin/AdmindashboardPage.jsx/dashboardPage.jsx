@@ -1,14 +1,19 @@
 import React from 'react'
 import DonutPieChart from "../../../components/admin.component/donutPieChart"
 import RevenueChart from '../../../components/admin.component/revenuechart'
+import BarChartComponent from '../../../components/admin.component/barchart'
 const dashboardPages = () => {
   return (
     <div>
       <div className=" min-h-screen flex-col">
         <div className="flex">
-          <div className="flex w-2/3">
+          <div className="flex-col w-2/3">
           <div className="flex-col justify-center">
-            <DonutPieChart/>
+            <DonutPieChart/>  
+            
+          </div>
+          <div className="flex-col justify-center">
+            <BarChartComponent/>  
             
           </div>
           

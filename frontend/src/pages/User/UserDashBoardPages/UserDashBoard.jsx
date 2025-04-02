@@ -36,7 +36,7 @@ const UserDashBoard = () => {
     }
   };
   return (
-    <Layout>
+    <>
       <div className="flex h-screen w-full bg-gray-100">
         {/* Sidebar */}
         <aside className="w-1/5 text-black p-6 flex flex-col items-center shadow-lg">
@@ -88,7 +88,7 @@ const UserDashBoard = () => {
           )}
         </main>
       </div>
-    </Layout>
+    </>
   );
 };
 

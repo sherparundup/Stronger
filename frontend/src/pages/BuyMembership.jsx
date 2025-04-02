@@ -91,7 +91,6 @@ const BuyMembership = () => {
   };
 
   return (
-    <Layout>
       <div className="flex flex-col items-center min-h-screen bg-gray-50 py-10">
         <h1 className="text-4xl font-bold mb-6 text-gray-800">Buy Membership</h1>
 
@@ -113,7 +112,6 @@ const BuyMembership = () => {
           <p className="text-gray-600 mt-4">Loading membership details...</p>
         )}
       </div>
-    </Layout>
   );
 };
 

@@ -65,7 +65,7 @@ const ProductDetailsPage = () => {
     };
 
     fetchProduct();
-  }, [id, auth?.token,]);
+  }, [id, auth?.token,quantity]);
   const fetchAvgRating = async () => {
     try {
 
@@ -101,9 +101,10 @@ const ProductDetailsPage = () => {
     }
   };
  const incrimentQuantity=()=>{
-  if(stock>quantity){
+  if(stock >quantity){
 
     setQuantity(quantity + 1)
+    console.log("Hi")
   }
   else{
     toast.error("please order less than the stock")
@@ -202,7 +203,7 @@ const ProductDetailsPage = () => {
   }
 
   return (
-    <Layout>
+    <>
       {bought_product_or_no === true ? (
         <>
           <div className="min-h-screen  max-w-full text-gray-800  flex-col lg:flex-row items-center lg:items-start px-6 py-12">
@@ -390,7 +391,7 @@ const ProductDetailsPage = () => {
           </div>
         </>
       )}
-    </Layout>
+    </>
   );
 };
 

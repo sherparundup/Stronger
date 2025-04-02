@@ -20,11 +20,14 @@ import ProductDetailsPage from "./pages/ProductDetailsPage"
 import AddToCart from "./pages/User/UserDashBoardPages/AddToCart"
 import EsewaPaymentForm from "./pages/User/EsewaPaymentForm"
 import BuyMembership from "./pages/BuyMembership"
+import Layout from "./components/layout/Layout"
 export default function App() {
   return (
       <AdminProductPageModeProvider>
       
+      <Layout>
     <Routes>
+        
       <Route path="/" element={<HomePage/>}/>
       <Route path="/register" element={<Register/>}/>
       <Route path="/login" element={<Login/>}/>
@@ -48,7 +51,7 @@ export default function App() {
             </AdminProductPageModeProvider>
             </AdminMembershipStateProvider>
           }
-        />
+          />
         </Route>
       <Route path="/coachdashboard" element={<ProtectedRoutes/>}>
       <Route path="" element={<CoachDashboard/>}/>
@@ -67,6 +70,7 @@ export default function App() {
       <Route path="/*" element={<PagesNotFound/>}/>
 
     </Routes>
+          </Layout>
       </AdminProductPageModeProvider>
     
   )

@@ -32,7 +32,6 @@ const HomePage = () => {
 
 
   return (
-    <Layout>
       <div className="flex-col ">
 
       <div className="relative min-h-screen bg-black w-full">
@@ -83,7 +82,6 @@ const HomePage = () => {
       </div>
       </div>
 
-    </Layout>
   );
 };
 

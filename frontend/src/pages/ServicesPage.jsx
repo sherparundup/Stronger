@@ -3,10 +3,10 @@ import Layout from '../components/layout/Layout'
 
 const ServicesPage = () => {
   return (
-    <Layout>
+    <>
 
     <div>ServicesPage</div>
-    </Layout>
+    </>
   )
 }
 

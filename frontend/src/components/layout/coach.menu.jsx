@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../Context/AuthContext';
-import AdminUsers from '../../pages/Admin/AdminUsers';
-import CatagoryPages from '../../pages/Admin/AdmindashboardPage.jsx/dashboardPage';
-import ProductPage from '../../pages/Admin/ProductPage/ProductPages';
-import MembershipPage from '../../pages/Admin/MembershipPage/MembershipPage';
-import UserMembership from '../../pages/Admin/MembershipPage/UserMembership';
+
 
 const AdminMenu = () => {
   const [selectedOption, setSelectedOption] = useState('catagory'); // Default option
@@ -12,26 +8,18 @@ const AdminMenu = () => {
   
 
   const options = [
-    { name: 'dashboard', label: 'Dashboard' },
-    { name: 'Products', label: 'Products' },
-    { name: 'Users', label: 'Users' },
-    {name:'membership',label:"Membership"},
-    {name:'userMebership',label:"UserMebership"}
+    { name: 'clients', label: 'Clients' },
+    { name: 'coachingPlans', label: 'CoachingPlans' },
+    { name: 'schedule', label: 'Schedule' }
+    
   ];
 
   // Dynamic rendering based on selectedOption
   const renderContent = () => {
     switch (selectedOption) {
-      case 'dashboard':
+      case 'clients':
         return <CatagoryPages />;
-      case 'Products':
-        return <ProductPage />;
-      case 'Users':
-        return <AdminUsers />;
-      case 'membership':
-        return <MembershipPage/>;
-      case 'userMebership':
-        return <UserMembership/>;
+     
       default:
         return <p>Select an option to see content</p>;
     }

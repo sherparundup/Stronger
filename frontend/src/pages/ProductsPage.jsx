@@ -32,7 +32,7 @@ const ProductsPage = () => {
   };
 
   return (
-    <Layout>
+    <>
       <div className="min-h-screen bg-gray-900 text-white">
         <div className="text-5xl font-bold text-center p-10">Our Products</div>
         
@@ -89,7 +89,7 @@ const ProductsPage = () => {
             ))}
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

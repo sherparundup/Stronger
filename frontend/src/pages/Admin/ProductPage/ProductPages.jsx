@@ -111,7 +111,7 @@ const ProductPages = () => {
       </Button></>}
 
       {mode === 'viewProduct' ? (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper}  >
           <Table>
             <TableHead>
               <TableRow>

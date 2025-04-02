@@ -40,7 +40,7 @@ const Login = () => {
 
         }
         else if(res.data?.user?.role=="coach"){
-          navigate('/'); 
+          navigate('/coachdashboard'); 
 
 
         }
@@ -52,7 +52,7 @@ const Login = () => {
   };
 
   return (
-    <Layout>
+    <>
       <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
         <Toaster />
         <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 shadow-lg rounded-lg">
@@ -128,7 +128,7 @@ const Login = () => {
           </form>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

@@ -33,7 +33,7 @@ const MembershipPage = () => {
   }, []);
 
   return (
-    <Layout>
+    <>
       <div className="flex flex-col min-h-screen items-center">
         <div className="flex justify-center">
           <h1 className="text-4xl font-bold mb-6">We Offer</h1>
@@ -106,7 +106,7 @@ const MembershipPage = () => {
           )}
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

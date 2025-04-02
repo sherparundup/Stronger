@@ -67,12 +67,12 @@ const PieChartComponent = () => {
         total: totalProducts,
         label: "Products"
       }].map(({ title, data, nameKey, total, label }, index) => (
-        <div key={index} className="flex flex-col items-center w-80 p-4 bg-gray-100 rounded-xl shadow-md">
+        <div key={index} className="flex flex-col items-center w-80 h-[170px] p-4 bg-gray-100 rounded-xl shadow-md">
           <h2 className="text-lg font-semibold">{title}</h2>
-          <div className="w-60 h-60 flex justify-center items-center">
-            <PieChart width={250} height={250}>
+          <div className="w-60 h-80 flex justify-center items-center">
+            <PieChart width={200} height={120}>
               <Tooltip />
-              <Pie data={data} dataKey="count" nameKey={nameKey} innerRadius={60} outerRadius={80} strokeWidth={2}>
+              <Pie data={data} dataKey="count" nameKey={nameKey} innerRadius={40} outerRadius={60} strokeWidth={2}>
                 {data.map((_, i) => (
                   <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
                 ))}

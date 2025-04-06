@@ -31,9 +31,7 @@ const Steps = () => {
 
   const getDailySteps = async () => {
     try {
-      // Retrieve the token from localStorage
       const token = localStorage.getItem('googleFitToken');
-  
       if (!token) {
         console.error("Token not found in localStorage");
         return;
@@ -41,29 +39,26 @@ const Steps = () => {
   
       const res = await axios.get("http://localhost:8000/api/googleFit/steps", {
         headers: {
-          Authorization: `Bearer ${token}`, // Correct way to send token in Authorization header
+          Authorization: `Bearer ${token}`,
         },
       });
   
-      // Assuming the bucket data is inside res.data.data.bucket
       const buckets = res.data.data.bucket || [];
-      let stepsByDay = [];
-  
-      // Calculate fallback start date: assume the first bucket corresponds to (buckets.length days ago)
       const fallbackStart = new Date(Date.now() - buckets.length * 24 * 60 * 60 * 1000);
+      const monthlySteps = {};
   
       buckets.forEach((bucket, index) => {
         let totalSteps = 0;
         let date = "";
-        // If bucket.startTimeMillis exists, use it
-        if (bucket.startTimeMillis) {
-          date = formatDate(bucket.startTimeMillis);
-        } else {
-          // Otherwise, calculate a fallback date from fallbackStart plus the bucket index
-          const fallbackTimestamp = fallbackStart.getTime() + index * 24 * 60 * 60 * 1000;
-          date = formatDate(fallbackTimestamp);
-        }
+        let timestamp = bucket.startTimeMillis
+          ? parseInt(bucket.startTimeMillis)
+          : fallbackStart.getTime() + index * 24 * 60 * 60 * 1000;
   
+        const day = new Date(timestamp);
+        const monthYearKey = `${day.toLocaleString("default", { month: "long" })} ${day.getFullYear()}`;
+        const formattedDay = `${day.getDate()}`;
+  
+        // Count steps
         if (bucket.dataset && bucket.dataset.length > 0) {
           bucket.dataset.forEach((dataset) => {
             if (dataset.point && dataset.point.length > 0) {
@@ -75,11 +70,20 @@ const Steps = () => {
             }
           });
         }
-        stepsByDay.push({ date, steps: totalSteps });
+  
+        // Initialize month group if not present
+        if (!monthlySteps[monthYearKey]) {
+          monthlySteps[monthYearKey] = [];
+        }
+  
+        monthlySteps[monthYearKey].push({
+          day: formattedDay,
+          steps: totalSteps,
+        });
       });
   
-      console.log("Daily Steps:", stepsByDay);
-      setDailySteps(stepsByDay);
+      console.log("Steps by Month:", monthlySteps);
+      setDailySteps(monthlySteps); // Now this is an object with month as keys
     } catch (error) {
       console.error("Error fetching steps:", error);
     }
@@ -111,16 +115,24 @@ const Steps = () => {
             Fetch Daily Steps
           </button>
           <ul className="mt-2">
-            {dailySteps.length > 0 ? (
-              dailySteps.map((entry, index) => (
-                <li key={index} className="p-1">
-                  <strong>{entry.date}</strong>: <strong>{entry.steps}</strong> steps
-                </li>
-              ))
-            ) : (
-              <p>No step data available</p>
-            )}
-          </ul>
+  {Object.keys(dailySteps).length > 0 ? (
+    Object.entries(dailySteps).map(([month, entries]) => (
+      <li key={month} className="mb-4">
+        <h3 className="font-bold text-lg">{month}</h3>
+        <ul className="ml-4">
+          {entries.map((entry, index) => (
+            <li key={index}>
+              {entry.day}: <strong>{entry.steps}</strong> steps
+            </li>
+          ))}
+        </ul>
+      </li>
+    ))
+  ) : (
+    <p>No step data available</p>
+  )}
+</ul>
+
           <button onClick={handleLogout} className="border border-red-500 p-2 mt-4">
             Logout
           </button>

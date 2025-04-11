@@ -43,19 +43,19 @@ const MyProductPage = () => {
               >
                 {/* Product Image */}
                 <img
-                  src={product.product.image?.url}
-                  alt={product.product.name}
+                  src={product.product?.image?.url}
+                  alt={product.product?.name}
                   className="w-40 h-40 object-cover rounded-lg"
                 />
                 {/* Product Info */}
                 <h3 className="text-lg font-semibold text-gray-800 mt-4">
-                  {product.product.name}
+                  {product.product?.name}
                 </h3>
                 <p className="text-gray-600 text-sm mt-1">
-                  Price: <span className="font-bold">${product.totalPrice}</span>
+                  Price: <span className="font-bold">${product?.totalPrice}</span>
                 </p>
                 <p className="text-gray-500 text-sm mt-1">
-                  Purchased on: {new Date(product.purchasedDate).toLocaleDateString()}
+                  Purchased on: {new Date(product?.purchasedDate).toLocaleDateString()}
                 </p>
               </div>
             ))}

@@ -1,8 +1,14 @@
 import React from 'react'
+import { UseIsCoachVerified } from '../../../Context/isCoachVerified.context'
 
 const clients = () => {
+  const [isVerified,setIsVerified]=UseIsCoachVerified();
   return (
-    <div>clients</div>
+    <div>
+      {
+        isVerified ?<>hiiiii</>:<>nooo</>
+      }
+    </div>
   )
 }
 

@@ -29,7 +29,7 @@ const OurCoachesPage = () => {
             className="bg-white shadow-lg rounded-2xl overflow-hidden hover:scale-105 transition-all duration-300"
           >
             <img
-              src={coach.image || "https://via.placeholder.com/400x300"}
+              src={coach.user?.image?.url || "https://via.placeholder.com/400x300"}
               alt={coach.name}
               className="w-full h-52 object-cover"
             />

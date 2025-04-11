@@ -29,7 +29,8 @@ const ProductDetailsPage = () => {
           `http://localhost:8000/api/Product/getSingleProduct/${id}`
         );
         setProduct(data.product);
-        setStock(product.countInStock)
+        setStock(data.product.countInStock); 
+
         
         
         // Check if the user has bought the product x
@@ -100,16 +101,14 @@ const ProductDetailsPage = () => {
       console.log(error.message);
     }
   };
- const incrimentQuantity=()=>{
-  if(stock >quantity){
+  const incrimentQuantity = () => {
+    if (quantity < stock) { // Only increment if quantity is less than stock
+        setQuantity(quantity + 1);
+    } else {
+        toast.error("Please order less than the stock available.");
+    }
+}
 
-    setQuantity(quantity + 1)
-    console.log("Hi")
-  }
-  else{
-    toast.error("please order less than the stock")
-  }
- }
   const reviewSubmit = async () => {
     try {
       const res = await axios.post(
@@ -252,8 +251,15 @@ const ProductDetailsPage = () => {
                   <div className="flex">In stock: {stock}</div>
                   <div className="flex gap-x-[20px]">
                     <button
-                      onClick={() =>
-                        Buy(product, quantity, product.price * quantity)
+                      onClick={() =>{
+                        if (stock >= quantity) {
+
+                          Buy(product, quantity, product.price * quantity)
+                        }
+                        else{
+                          toast.error("no stock available at the moment")
+                        }
+                      }
                       }
                       className="mt-8 w-[20px] lg:w-1/5 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg text-lg font-semibold transition-shadow shadow-md hover:shadow-lg"
                     >
@@ -348,7 +354,7 @@ const ProductDetailsPage = () => {
                       </button>
                       <span className="text-xl font-semibold">{quantity}</span>
                       <button
-                        onClick={() => setQuantity(quantity + 1)}
+                        onClick={() =>incrimentQuantity()}
                         className="bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded-lg text-gray-800 text-xl font-bold"
                       >
                         +

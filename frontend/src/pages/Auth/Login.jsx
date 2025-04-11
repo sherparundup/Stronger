@@ -40,6 +40,7 @@ const Login = () => {
 
         }
         else if(res.data?.user?.role=="coach"){
+        
           navigate('/coachdashboard'); 
 
 

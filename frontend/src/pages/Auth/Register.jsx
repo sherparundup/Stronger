@@ -31,7 +31,8 @@ const Register = () => {
     }
 
     // Password Regex: Minimum 6 characters, must contain uppercase, lowercase, number, and special character
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{6,}$/;
+
     if (!passwordRegex.test(password)) {
       newErrors.password = "Password must be at least 6 characters long, contain an uppercase letter, a number, and a special character.";
     }

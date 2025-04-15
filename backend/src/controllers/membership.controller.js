@@ -164,7 +164,8 @@ export const getActiveUserMembers=async(req,res)=>{
     try {
         const allMembers=await UserMembershipModel.find({
             membershipStatus:"active"
-        });
+        }).populate("userId")           
+        .populate("membershipId");
         res.status(200).json(new ApiResponse(200,allMembers,"all members"))
         
     } catch (error) {

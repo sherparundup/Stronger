@@ -16,6 +16,7 @@ const uploadOnCloudinary = async (localFilePath) => {
     const response = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "auto",
       folder: "Stronger",
+      access_mode: "public"
     });
     fs.unlinkSync(localFilePath);
 
@@ -29,4 +30,27 @@ const uploadOnCloudinary = async (localFilePath) => {
     return null;
   }
 };
-export { uploadOnCloudinary };
+const uploadOnCloudinaryPDF = async (localFilePath) => {
+  try {
+    if (!localFilePath) {
+      console.log("no local file path");
+      return null;
+    }
+    const response = await cloudinary.uploader.upload(localFilePath, {
+      resource_type: "raw",
+      folder: "Stronger",
+      access_mode: "public"
+    });
+    fs.unlinkSync(localFilePath);
+
+    console.log("File uploaded successfully on cloudinary");
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log("erorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+    console.log(error.message);
+    fs.unlinkSync(localFilePath);
+    return null;
+  }
+};
+export { uploadOnCloudinary,uploadOnCloudinaryPDF };

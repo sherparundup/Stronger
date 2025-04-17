@@ -4,10 +4,8 @@ import { ApiResponse } from "../utils/util.api.response.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.util.js";
 import AddToCartModel from "../model/addToCart.model.js";
 import Payment from "../model/payment.model.js";
-import PurchasedProduct from "../model/purchasedProduct.model.js";
 import mongoose from "mongoose";
 import purchasedProduct from "../model/purchasedProduct.model.js";
-// import purchasedProduct from "../model/purchasedProduct.model.js";
 // Add a new product
 
 export const addProduct = async (req, res) => {
@@ -325,7 +323,7 @@ export const removeCart=async(req,res)=>{
       if(!id){
         return res.status(404).json(new ApiResponse(404,{},"no User"))
       }
-      const BoughtProducts=await PurchasedProduct.find({UserId:id,status:"completed"}).populate("product")
+      const BoughtProducts=await purchasedProduct.find({UserId:id,status:"completed"}).populate("product")
       return res.status(200).json(new ApiResponse(200,BoughtProducts,"Products"))
       
     } catch (error) {
@@ -343,7 +341,7 @@ export const removeCart=async(req,res)=>{
         return res.status(400).json(new ApiResponse(400, null, "Invalid User ID"));
       }
       
-      const purchasedProduct = await PurchasedProduct.findOne({
+      const purchasedProduct = await purchasedProduct.findOne({
         product:id,
         status: "completed",
         UserId:req.user._id
@@ -363,11 +361,14 @@ export const removeCart=async(req,res)=>{
   export const BoughtProduct=async(req,res)=>{
     
     try {
-      const allBoughtProduct=await PurchasedProduct.find({
-        status:"completed"
+      const allBoughtProduct = await purchasedProduct
+  .find({ status: 'completed' })
+  .populate("UserId") // Populate UserId if needed
+  .populate("product")  // Populating the 'product' field
+  
+console.log(allBoughtProduct);  // Check populated result
 
-      })
-      return res.status(200).json(new ApiResponse(200,allBoughtProduct,"all products"))
+            return res.status(200).json(new ApiResponse(200,allBoughtProduct,"all products"))
       
     } catch (error) {
       return res.status(500).json(new ApiResponse(500, error.message, "Internal server error"));

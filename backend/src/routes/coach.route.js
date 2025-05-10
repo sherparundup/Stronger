@@ -9,6 +9,7 @@ import {
   getAllTestimonials,
   getcheckVerification,
   getCoachingPlans,
+  getUserBoughtCourses,
   hasUserHadSession,
   HiringCoach,
   isVerified,
@@ -44,6 +45,9 @@ router.get("/coachForContext/:coachId", coachForContext);
 router.post("/coachTestimonial", CoachTestimonial);
 router.get("/testimonials/:coachId", getAllTestimonials);
 router.post("/checkIfSession", hasUserHadSession);
+
+
+router.get("/getUserBoughtCourses/:id",getUserBoughtCourses)
 
 router.post(
   "/createCoachingPlan/:id",

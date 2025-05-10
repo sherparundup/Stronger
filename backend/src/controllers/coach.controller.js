@@ -630,3 +630,31 @@ export const plansRevenue = async (req, res) => {
       );
   }
 };
+
+
+export const getUserBoughtCourses=async(req,res)=> {
+  try {
+    const { id } = req.params;
+    const UserBoughtCourses = await purchasedCoachPlansModel.find({
+      UserId: id,
+    }).populate("UserId").populate("coach").populate("coachPlan");
+    if (!UserBoughtCourses) {
+      return res.status(200).json(new ApiResponse(200, {}, "no buyers yet"));
+    }
+    return res
+      .status(200)
+      .json(new ApiResponse(200, UserBoughtCourses, "coaches plan bought"));
+  } catch (error) {
+    console.error(error.message, "hereeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+    // Respond with error
+    return res
+      .status(500)
+      .json(
+        new ApiResponse(
+          500,
+          error,
+          `Error creating Coaching Plan: ${error.message}`
+        )
+      );
+  }
+};

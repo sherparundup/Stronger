@@ -25,12 +25,11 @@ const ProductPages = () => {
   const [productId, setProductId] = useState(null);
   const [auth] = useAuth();
 
-  // Handler for Edit
-
   const editProduct = (productId) => {
     setMode('updateProduct');
     setProductId(productId);
   };
+
   const refreshProducts = async () => {
     try {
       const res = await axios.get('http://localhost:8000/api/Product/getAllProduct', {
@@ -43,8 +42,6 @@ const ProductPages = () => {
     }
   };
 
-
-  // Handler for Delete
   const deleteProduct = async (productId) => {
     try {
       const res = await axios.delete(
@@ -63,7 +60,6 @@ const ProductPages = () => {
     }
   };
 
-  // Fetch Products
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -80,61 +76,66 @@ const ProductPages = () => {
   }, [auth?.token]);
 
   return (
-    <>
-      {/* Clickable Title to Reset Mode */}
+    <div className="bg-black min-h-screen p-6 text-white">
       <Typography
         variant="h4"
         gutterBottom
-        style={{ cursor: 'pointer', color: 'green' }}
+        className="cursor-pointer text-green-500 hover:text-green-400 transition"
         onClick={() => setMode('viewProduct')}
       >
         Products Page
       </Typography>
 
-      {mode === 'viewProduct' ?<>
+      {mode === 'viewProduct' ? (
         <Button
-        variant="contained"
-        color="primary"
-        onClick={() => setMode('addProduct')}
-        style={{ marginBottom: '20px' }}
-      >
-        Add Product
-      </Button>
-      </>:<>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => setMode('viewProduct')}
-        style={{ marginBottom: '20px' }}
-      >
-        View Products
-      </Button></>}
+          variant="contained"
+          onClick={() => setMode('addProduct')}
+          style={{
+            backgroundColor: '#1f2937',
+            color: 'white',
+            marginBottom: '20px',
+            fontWeight: 'bold',
+          }}
+        >
+          Add Product
+        </Button>
+      ) : (
+        <Button
+          variant="contained"
+          onClick={() => setMode('viewProduct')}
+          style={{
+            backgroundColor: '#1f2937',
+            color: 'white',
+            marginBottom: '20px',
+            fontWeight: 'bold',
+          }}
+        >
+          View Products
+        </Button>
+      )}
 
       {mode === 'viewProduct' ? (
-        <TableContainer component={Paper}  >
+        <TableContainer component={Paper} style={{ backgroundColor: '#111827', color: 'white' }}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Product Name</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Price</TableCell>
-                <TableCell>Count In Stock</TableCell>
-                <TableCell>Category</TableCell>
-                <TableCell>Created At</TableCell>
-                <TableCell>Image</TableCell>
-                <TableCell>Actions</TableCell>
+                {['Product Name', 'Description', 'Price', 'Count In Stock', 'Category', 'Created At', 'Image', 'Actions'].map((head) => (
+                  <TableCell key={head} style={{ color: '#9CA3AF', fontWeight: 'bold' }}>
+                    {head}
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {allProducts.length > 0 ? (
                 allProducts.map((product) => (
-                  <TableRow key={product._id}>
-                    <TableCell>{product.name}</TableCell>
-                    <TableCell>{product.description}</TableCell>
-                    <TableCell>nrs{product.price}</TableCell>
-                    <TableCell>{product.countInStock}</TableCell>
-                    <TableCell>{product.catagory}</TableCell>
-                    <TableCell>
+                  <TableRow key={product._id} style={{ color: 'white' }}>
+                    <TableCell style={{ color: 'white' }}>{product.name}</TableCell>
+                    <TableCell style={{ color: 'white' }}>{product.description}</TableCell>
+                    <TableCell style={{ color: 'white' }}>nrs{product.price}</TableCell>
+                    <TableCell style={{ color: 'white' }}>{product.countInStock}</TableCell>
+                    <TableCell style={{ color: 'white' }}>{product.catagory}</TableCell>
+                    <TableCell style={{ color: 'white' }}>
                       {new Date(product.createdAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
@@ -142,31 +143,30 @@ const ProductPages = () => {
                         <img
                           src={product.image.url}
                           alt={product.name}
-                          style={{ width: '100px', height: '100px' }}
+                          style={{
+                            width: '100px',
+                            height: '100px',
+                            objectFit: 'cover',
+                            borderRadius: '8px',
+                          }}
                         />
                       ) : (
                         'No image available'
                       )}
                     </TableCell>
                     <TableCell>
-                      <IconButton
-                        color="primary"
-                        onClick={() => editProduct(product._id)}
-                      >
-                        <EditIcon />
+                      <IconButton onClick={() => editProduct(product._id)}>
+                        <EditIcon style={{ color: '#10B981' }} />
                       </IconButton>
-                      <IconButton
-                        color="secondary"
-                        onClick={() => deleteProduct(product._id)}
-                      >
-                        <DeleteIcon />
+                      <IconButton onClick={() => deleteProduct(product._id)}>
+                        <DeleteIcon style={{ color: '#EF4444' }} />
                       </IconButton>
                     </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={8} align="center">
+                  <TableCell colSpan={8} align="center" style={{ color: 'white' }}>
                     No products found
                   </TableCell>
                 </TableRow>
@@ -179,7 +179,7 @@ const ProductPages = () => {
       ) : (
         <AddProductPage refreshProducts={refreshProducts} />
       )}
-    </>
+    </div>
   );
 };
 

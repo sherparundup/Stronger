@@ -87,17 +87,16 @@ const CoachingPlans = () => {
           image: null,
           pdf: null,
         });
-        toast.success(response.data.message||"uploaed succesfuly")
+        toast.success(response.data.message || "Uploaded successfully");
       }
     } catch (err) {
       console.error("Error creating coaching plan:", err);
-      toast.error("unable to creating coaching plan:");
-
+      toast.error("Unable to create coaching plan.");
     }
   };
 
   if (loading) {
-    return <div className="text-center text-2xl text-blue-500">Loading...</div>;
+    return <div className="text-center text-2xl text-white">Loading...</div>;
   }
 
   if (error) {
@@ -105,14 +104,12 @@ const CoachingPlans = () => {
   }
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-4xl font-semibold text-center text-indigo-600 mb-6">
-        Coaching Plans
-      </h1>
+    <div className="p-6 bg-black min-h-screen text-white">
+      <h1 className="text-4xl font-semibold text-center mb-6">Coaching Plans</h1>
       <div className="flex justify-center mb-6">
         <button
           onClick={() => setShowForm(!showForm)}
-          className="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-lg hover:bg-indigo-700 transition duration-300"
+          className="px-6 py-2 bg-white text-black rounded-lg shadow-lg hover:bg-indigo-700 transition duration-300"
         >
           {showForm ? "Cancel" : "Create Coaching Plan"}
         </button>
@@ -122,12 +119,10 @@ const CoachingPlans = () => {
         <form
           onSubmit={handleSubmit}
           encType="multipart/form-data"
-          className="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-xl space-y-6"
+          className="max-w-xl mx-auto bg-gray-800 p-8 rounded-lg shadow-xl space-y-6"
         >
           <div>
-            <label className="block text-lg font-medium text-gray-700">
-              Title
-            </label>
+            <label className="block text-lg font-medium text-white">Title</label>
             <input
               type="text"
               name="title"
@@ -138,9 +133,7 @@ const CoachingPlans = () => {
             />
           </div>
           <div>
-            <label className="block text-lg font-medium text-gray-700">
-              Description
-            </label>
+            <label className="block text-lg font-medium text-white">Description</label>
             <textarea
               name="description"
               value={formData.description}
@@ -150,7 +143,7 @@ const CoachingPlans = () => {
             />
           </div>
           <div>
-            <label className="block text-lg font-medium text-gray-700">
+            <label className="block text-lg font-medium text-white">
               Duration (in weeks)
             </label>
             <input
@@ -163,9 +156,7 @@ const CoachingPlans = () => {
             />
           </div>
           <div>
-            <label className="block text-lg font-medium text-gray-700">
-              Price
-            </label>
+            <label className="block text-lg font-medium text-white">Price</label>
             <input
               type="number"
               name="price"
@@ -176,9 +167,7 @@ const CoachingPlans = () => {
             />
           </div>
           <div>
-            <label className="block text-lg font-medium text-gray-700">
-              Coaching Type
-            </label>
+            <label className="block text-lg font-medium text-white">Coaching Type</label>
             <select
               name="type"
               value={formData.type}
@@ -193,7 +182,7 @@ const CoachingPlans = () => {
             </select>
           </div>
           <div>
-            <label className="block text-lg font-medium text-gray-700">
+            <label className="block text-lg font-medium text-white">
               Target Audience
             </label>
             <select
@@ -208,30 +197,26 @@ const CoachingPlans = () => {
             </select>
           </div>
           <div>
-            <label className="block text-lg font-medium text-gray-700">
-              Upload Image
-            </label>
+            <label className="block text-lg font-medium text-white">Upload Image</label>
             <input
               type="file"
               name="image"
               onChange={handleFileChange}
-              className="mt-2 w-full text-sm text-gray-600 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded-lg file:bg-indigo-100"
+              className="mt-2 w-full text-sm text-white file:py-2 file:px-4 file:border file:border-gray-300 file:rounded-lg file:bg-indigo-100"
             />
           </div>
           <div>
-            <label className="block text-lg font-medium text-gray-700">
-              Upload PDF
-            </label>
+            <label className="block text-lg font-medium text-white">Upload PDF</label>
             <input
               type="file"
               name="pdf"
               onChange={handleFileChange}
-              className="mt-2 w-full text-sm text-gray-600 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded-lg file:bg-indigo-100"
+              className="mt-2 w-full text-sm text-white file:py-2 file:px-4 file:border file:border-gray-300 file:rounded-lg file:bg-indigo-100"
             />
           </div>
           <button
             type="submit"
-            className="w-full py-3 bg-indigo-600 text-white rounded-lg shadow-lg hover:bg-indigo-700 transition duration-300"
+            className="w-full py-3 bg-white text-white rounded-lg shadow-lg hover:bg-indigo-700 transition duration-300"
           >
             Create Plan
           </button>
@@ -243,20 +228,20 @@ const CoachingPlans = () => {
           coachingPlans.map((plan) => (
             <div
               key={plan._id}
-              className="coaching-plan bg-white p-6 rounded-lg shadow-md mb-6"
+              className="coaching-plan bg-black p-6 rounded-lg shadow-md mb-6"
             >
-              <h2 className="text-2xl font-semibold text-indigo-600">
+              <h2 className="text-2xl font-semibold text-white">
                 {plan.title}
               </h2>
-              <p className="mt-2 text-gray-700">{plan.description}</p>
-              <p className="mt-2 text-gray-500">
+              <p className="mt-2 text-white">{plan.description}</p>
+              <p className="mt-2 text-white">
                 Duration: {plan.durationInWeeks} weeks
               </p>
-              <p className="mt-2 text-gray-500">Price: rs {plan.price}</p>
-              <p className="mt-2 text-gray-500">
+              <p className="mt-2 text-white">Price: rs {plan.price}</p>
+              <p className="mt-2 text-white">
                 Target Audience: {plan.targetAudience}
               </p>
-              <p className="mt-2 text-gray-500">Type: {plan.type}</p>
+              <p className="mt-2 text-white">Type: {plan.type}</p>
               {plan.image?.url && (
                 <img
                   src={plan.image?.url}
@@ -269,7 +254,7 @@ const CoachingPlans = () => {
                   href={plan.pdf?.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block mt-4 text-indigo-600 hover:underline"
+                  className="block mt-4 text-white hover:underline"
                 >
                   Download PDF
                 </a>

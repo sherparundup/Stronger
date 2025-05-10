@@ -3,6 +3,7 @@ import Layout from "../components/layout/Layout";
 import axios from "axios";
 import { useAuth } from "../Context/AuthContext";
 import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const BuyMembership = () => {
   const [auth] = useAuth();  // No need to use setAuth unless updating auth
@@ -33,7 +34,11 @@ const BuyMembership = () => {
 
   const Buy = async (Membership, totalPrice) => {
     try {
-    
+      if (!auth?.token) {
+        toast.error("Please login to buy a membership");
+        return;
+      }
+      
       const UserId = auth?.user?._id;
       console.log(`useriiiiiiiiiiiiiii`,UserId)
       const res = await axios.post(
@@ -43,6 +48,11 @@ const BuyMembership = () => {
           headers: { Authorization: auth?.token },
         }
       );
+      if(res.data.success===false){
+        toast.error("Please login to buy a membership");
+        console.log("not logged in")
+        return ;
+      }
       console.log(res)
       console.log("helli")
       const signature = res.data.payment.signature;

@@ -5,7 +5,7 @@ export const IsSignedIn = (req, res, next) => {
     try {
         const token = req.headers.authorization;
         if (!token) {
-            return res.status(401).json({ message: "Authorization header is missing" });
+            return res.status(401).json({ message: "Log in first" });
         }
         
         const decode = JWT.verify(token, process.env.SECRET);

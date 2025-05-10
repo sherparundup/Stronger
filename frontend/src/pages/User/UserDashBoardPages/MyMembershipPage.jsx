@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../../Context/AuthContext';
 
@@ -41,6 +41,7 @@ const MyMembershipPage = () => {
     const fetchMembership = async () => {
       try {
         const userId = auth?.user?._id;
+        console.log("userId",userId)
         const res = await axios.get(`http://localhost:8000/api/membership/userMembership/${userId}`);
         console.log("Full response:", res.data);
 

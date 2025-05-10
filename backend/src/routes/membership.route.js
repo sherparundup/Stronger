@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import express from "express";
 import { isAdmin, IsSignedIn } from "../middleware/auth.midlleWear.js";
-import { CreateMembershipController, deleteMembership, getActiveUserMembers, getAllMembership, joinMembership, singleMembership, updateMembership } from "../controllers/membership.controller.js";
+import { CreateMembershipController, deleteMembership, getActiveUserMembers, getAllMembership, getExpiredUserMembers, joinMembership, singleMembership, updateMembership } from "../controllers/membership.controller.js";
 import { completePayment, InitializeEsewa, userMembership } from "../controllers/membershipPayment.controller.js";
 const Router = express.Router();
 
@@ -15,6 +15,7 @@ Router.post("/joinMembership/:_id",IsSignedIn,joinMembership)
 Router.get("/userMembership/:id",userMembership)
 
 Router.get("/getActiveUserMembers",getActiveUserMembers)
+Router.get("/getExpiredUserMembers",getExpiredUserMembers)
 
 Router.post("/joinMembership/Payment/initialize-esewa",IsSignedIn,InitializeEsewa)
 Router.get("/joinMembership/Payment/complete-payment/:id",completePayment)

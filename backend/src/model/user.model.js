@@ -34,6 +34,10 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    isCoach:{
+        type: Boolean,
+        default: false,
+    },
     resetToken: {
         type: String, // Token for password reset
         default: null, // Default value is null

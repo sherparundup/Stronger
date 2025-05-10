@@ -15,7 +15,6 @@ const AuthProvider=({children})=>{
         const InJsonFormatData=JSON.parse(data);
         setAuth(InJsonFormatData);
 
-
     },[])
    return(
     <>

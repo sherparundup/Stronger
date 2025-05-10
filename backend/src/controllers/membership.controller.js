@@ -173,3 +173,22 @@ export const getActiveUserMembers=async(req,res)=>{
         res.status(500).json(new ApiResponse(200,error,"something went wrong"))
     }
 }
+export const getExpiredUserMembers = async (req, res) => {
+    try {
+      const expiredMembers = await UserMembershipModel.find({
+        membershipStatus: "inactive"
+      })
+      .populate("userId")
+      .populate("membershipId");
+  
+      res.status(200).json(
+        new ApiResponse(200, expiredMembers, "expired members")
+      );
+    } catch (error) {
+      console.error("Error fetching expired members:", error);
+      res.status(500).json(
+        new ApiResponse(500, null, "something went wrong")
+      );
+    }
+  };
+  

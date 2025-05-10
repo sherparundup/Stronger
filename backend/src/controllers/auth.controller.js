@@ -101,6 +101,7 @@ export const login = async (req, res) => {
         email: isThereAUserWithThisEmail.email,
         role: isThereAUserWithThisEmail.role,
         image: isThereAUserWithThisEmail.image,
+        isMember:isThereAUserWithThisEmail.isMember,
       },
       token,
     });

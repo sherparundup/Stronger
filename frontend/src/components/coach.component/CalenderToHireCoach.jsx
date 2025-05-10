@@ -45,9 +45,10 @@ const CalenderToHireCoach = ({ coach }) => {
   };
 
   return (
-    <div className="p-4 flex flex-col items-center">
+    <div className="p-4 flex flex-col items-center ">
       <h2 className="text-xl text-red-50 font-bold mb-4">Select a Date</h2>
-      <Calendar onChange={setDate} value={date} />
+      <Calendar onChange={setDate} value={date}         className="w-full max-w-xl h-[500px] text-2xl"  // Increase size of the calendar
+ />
       <p className="mt-4 bg-white">📅 Selected Date: {date.toDateString()}</p>
       <button className="mt-4 bg-white px-4 py-2 rounded shadow" onClick={HireCoach}>
         Hire

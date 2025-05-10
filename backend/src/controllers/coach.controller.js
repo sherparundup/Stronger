@@ -7,6 +7,9 @@ import {
 } from "../utils/cloudinary.util.js";
 import CoachBookingModel from "../model/CoachBooking.model.js";
 import coachTestimonialModel from "../model/coachTestimonial.model.js";
+import CoachingPlanModel from "../model/CoachingPlanModel.js";
+import emailSender from "../utils/nodemailor.util.js";
+import purchasedCoachPlansModel from "../model/purchasedCoachPlans.model.js";
 
 export const VerifyYourSelf = async (req, res) => {
   try {
@@ -224,7 +227,6 @@ export const SpecifiedCoach = async (req, res) => {
   }
 };
 
-
 export const HiringCoach = async (req, res) => {
   try {
     const { coachId, userId, selectedDate } = req.body;
@@ -279,18 +281,17 @@ export const HiringCoach = async (req, res) => {
   }
 };
 
-
-
-
 export const getAllClients = async (req, res) => {
   try {
-    const {CoachId}=req.params;
+    const { CoachId } = req.params;
 
-    const clients = await CoachBookingModel.find({coachId:CoachId}).populate("userId")
+    const clients = await CoachBookingModel.find({ coachId: CoachId }).populate(
+      "userId"
+    );
     res.status(200).json({
       success: true,
       message: "Fetched all clients successfully",
-       clients,
+      clients,
     });
   } catch (error) {
     res.status(500).json({
@@ -304,9 +305,9 @@ export const coachForContext = async (req, res) => {
   try {
     const { coachId } = req.params;
     console.log("id iiiss", coachId);
-    const TheSpecifiedCoach = await CoachVerificationModel.findOne(
-      {user:coachId}
-    ).populate("user");
+    const TheSpecifiedCoach = await CoachVerificationModel.findOne({
+      user: coachId,
+    }).populate("user");
     if (!TheSpecifiedCoach) {
       return res.status(404).json(new ApiResponse(404, {}, "No coach found"));
     }
@@ -325,7 +326,7 @@ export const coachForContext = async (req, res) => {
 
 export const acceptClients = async (req, res) => {
   try {
-    const { clientId, coachId, status, selectedDate } = req.body;
+    const { clientId, coachId, status, selectedDate, name, email } = req.body;
 
     const updatedBooking = await CoachBookingModel.findOneAndUpdate(
       {
@@ -338,9 +339,19 @@ export const acceptClients = async (req, res) => {
     );
 
     if (!updatedBooking) {
-      return res.status(404).json({ success: false, message: "Booking not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Booking not found" });
     }
+    const subject = "Regarding coaching session";
 
+    if (status == "approved") {
+      const acceptenceMessage = `Hi! ${name} 👋  Your coaching session request has been approved ✅ on the date ${selectedDate}. I'm excited to work with you! Let's achieve your goals together 💪. Please be on time for your scheduled session. If you have any questions, feel free to reach out!`;
+      emailSender(email, subject, acceptenceMessage);
+    } else if (status == "cancelled") {
+      const rejectionMessage = `Hi ${clientName}, 👋 unfortunately, your coaching session request has been declined ❌. Please don’t feel discouraged — I believe in your potential! You can try booking another session at a different time, and I’d be happy to work with you in the future. Stay strong and keep pushing forward 💪.`;
+      emailSender(email, subject, rejectionMessage);
+    }
     res.status(200).json({
       success: true,
       message: `Client has been ${status}`,
@@ -352,7 +363,6 @@ export const acceptClients = async (req, res) => {
   }
 };
 
-
 export const CoachTestimonial = async (req, res) => {
   try {
     // Destructure the required data from the request body
@@ -360,18 +370,18 @@ export const CoachTestimonial = async (req, res) => {
 
     // Validate the input data
     if (!coachId || !userId || !rating || !message) {
-      return res.status(400).json({ error: 'All fields are required.' });
+      return res.status(400).json({ error: "All fields are required." });
     }
 
     // Ensure the rating is between 1 and 5
     if (rating < 1 || rating > 5) {
-      return res.status(400).json({ error: 'Rating must be between 1 and 5.' });
+      return res.status(400).json({ error: "Rating must be between 1 and 5." });
     }
 
     // Find the coach by the coachId
     const coach = await CoachVerificationModel.findById(coachId);
     if (!coach) {
-      return res.status(404).json({ error: 'Coach not found.' });
+      return res.status(404).json({ error: "Coach not found." });
     }
 
     const testimonial = new coachTestimonialModel({
@@ -386,12 +396,14 @@ export const CoachTestimonial = async (req, res) => {
 
     // Respond with the saved testimonial
     res.status(201).json({
-      message: 'Testimonial submitted successfully.',
+      message: "Testimonial submitted successfully.",
       testimonial,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'An error occurred while submitting the testimonial.' });
+    res
+      .status(500)
+      .json({ error: "An error occurred while submitting the testimonial." });
   }
 };
 
@@ -400,7 +412,8 @@ export const getAllTestimonials = async (req, res) => {
     const { coachId } = req.params; // Extract coachId from the request params
 
     // Fetch all testimonials for the specified coachId
-    const testimonials = await coachTestimonialModel.find({ coach:coachId })
+    const testimonials = await coachTestimonialModel
+      .find({ coach: coachId })
       .populate("user", "name image") // Populating user data (if necessary)
       .sort({ createdAt: -1 }); // Sorting by creation date, latest first
 
@@ -411,14 +424,14 @@ export const getAllTestimonials = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Testimonials fetched successfully.",
       data: testimonials,
     });
   } catch (error) {
     console.error("Error fetching testimonials:", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Something went wrong while fetching testimonials.",
       error: error.message,
@@ -431,26 +444,28 @@ export const hasUserHadSession = async (req, res) => {
     const { coachId, userId } = req.body;
 
     if (!coachId || !userId) {
-      return res.status(400).json({ success: false, message: "coachId and userId are required." });
+      return res
+        .status(400)
+        .json({ success: false, message: "coachId and userId are required." });
     }
 
     const sessionExists = await CoachBookingModel.find({
       coach: coachId,
       user: userId,
-      status: "approved" 
+      status: "approved",
     });
 
     if (sessionExists) {
       return res.status(200).json({
         success: true,
         hasSession: true,
-        message: "User has had at least one session with the coach."
+        message: "User has had at least one session with the coach.",
       });
     } else {
       return res.status(200).json({
         success: true,
         hasSession: false,
-        message: "User has not had any sessions with the coach."
+        message: "User has not had any sessions with the coach.",
       });
     }
   } catch (error) {
@@ -460,5 +475,158 @@ export const hasUserHadSession = async (req, res) => {
       message: "Server error checking session.",
       error: error.message,
     });
+  }
+};
+
+export const CreateCoachingPlan = async (req, res) => {
+  try {
+    const {
+      title,
+      description,
+      durationInWeeks,
+      price,
+
+      type,
+      targetAudience,
+    } = req.body;
+    const image = req.files?.image?.[0];
+    const pdf = req.files?.document?.[0];
+    const { id } = req.params;
+    // Check for required fields
+    if (!title) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Title is required"));
+    }
+    if (!description) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Description is required"));
+    }
+    if (!durationInWeeks) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Duration is required"));
+    }
+    if (!price) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Price is required"));
+    }
+    if (!id) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Coach is required"));
+    }
+
+    // Create new CoachingPlan document
+    const newCoachingPlan = new CoachingPlanModel({
+      title,
+      description,
+      durationInWeeks,
+      price,
+      coach: id,
+      type,
+      targetAudience,
+    });
+
+    // Upload image if available
+    if (image) {
+      const path = image.path;
+      console.log(path);
+      const upload = await uploadOnCloudinary(path);
+      if (!upload) {
+        return res
+          .status(500)
+          .json(
+            new ApiResponse(500, {}, "Failed to upload image on Cloudinary")
+          );
+      }
+      newCoachingPlan.image = { url: upload.secure_url };
+    }
+
+    // Upload PDF if available
+    if (pdf) {
+      const path = pdf.path;
+      const upload = await uploadOnCloudinaryPDF(path);
+      if (!upload) {
+        return res
+          .status(500)
+          .json(new ApiResponse(500, {}, "Failed to upload PDF on Cloudinary"));
+      }
+      newCoachingPlan.pdf = { url: upload.secure_url };
+    }
+
+    // Save the new coaching plan
+    await newCoachingPlan.save();
+
+    // Respond with success
+    return res
+      .status(201)
+      .json(
+        new ApiResponse(
+          201,
+          newCoachingPlan,
+          "Coaching Plan created successfully"
+        )
+      );
+  } catch (error) {
+    console.error(error.message, "hereeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+    // Respond with error
+    return res
+      .status(500)
+      .json(
+        new ApiResponse(
+          500,
+          error,
+          `Error creating Coaching Plan: ${error.message}`
+        )
+      );
+  }
+};
+
+export const getCoachingPlans = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res
+        .status(500)
+        .json(new ApiResponse(500, {}, "no coach with such id"));
+    }
+    const allTheCoachPlans = await CoachingPlanModel.find({ coach: id });
+    return res
+      .status(200)
+      .json(new ApiResponse(200, allTheCoachPlans, " coaches plans"));
+  } catch (error) {
+    return res
+      .status(500)
+      .json(new ApiResponse(500, error.message, "Something went wrong"));
+  }
+};
+
+export const plansRevenue = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const CoachesRevenue = await purchasedCoachPlansModel.find({
+      coach: id,
+    }).populate("UserId").populate("coach");
+    if (!CoachesRevenue) {
+      return res.status(200).json(new ApiResponse(200, {}, "no buyers yet"));
+    }
+    return res
+      .status(200)
+      .json(new ApiResponse(200, CoachesRevenue, "coaches plan bought"));
+  } catch (error) {
+    console.error(error.message, "hereeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+    // Respond with error
+    return res
+      .status(500)
+      .json(
+        new ApiResponse(
+          500,
+          error,
+          `Error creating Coaching Plan: ${error.message}`
+        )
+      );
   }
 };

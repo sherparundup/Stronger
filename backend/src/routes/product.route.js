@@ -9,7 +9,7 @@ Router.post("/addProduct", IsSignedIn, isAdmin,upload.single("image"), addProduc
 Router.get("/getAllProduct",  getAllProduct);
 Router.get("/getSingleProduct/:id",getSingleProduct);
 Router.delete("/deleteProduct/:id", IsSignedIn, isAdmin, deleteProduct);
-Router.put("/updateProduct/:id",upload.single("image") , updateProduct);
+    Router.put("/updateProduct/:id",upload.single("image") , updateProduct);
 //user
 Router.post("/addToCart", IsSignedIn, addToCart);
 Router.get("/getCart", IsSignedIn, getCart);

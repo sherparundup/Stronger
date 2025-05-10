@@ -5,10 +5,16 @@ import CatagoryPages from '../../pages/Admin/AdmindashboardPage.jsx/dashboardPag
 import ProductPage from '../../pages/Admin/ProductPage/ProductPages';
 import MembershipPage from '../../pages/Admin/MembershipPage/MembershipPage';
 import UserMembership from '../../pages/Admin/MembershipPage/UserMembership';
+import CoachPages from '../../pages/Admin/coachPage/OurCoaches';
+import { useNavigate } from 'react-router-dom'; // Import navigate hook
+import { toast } from 'react-toastify'; // Make sure toast is correctly imported
+import BoughtProducts from '../../pages/Admin/ProductPage/BoughtProducts';
+
 
 const AdminMenu = () => {
-  const [selectedOption, setSelectedOption] = useState('catagory'); // Default option
-  const [auth] = useAuth();
+  const [selectedOption, setSelectedOption] = useState('dashboard'); // Default option
+  const [auth,setAuth] = useAuth();
+  const navigate= useNavigate()
   
 
   const options = [
@@ -16,7 +22,10 @@ const AdminMenu = () => {
     { name: 'Products', label: 'Products' },
     { name: 'Users', label: 'Users' },
     {name:'membership',label:"Membership"},
-    {name:'userMebership',label:"UserMebership"}
+    {name:'userMebership',label:"UserMebership"},
+    {name:'ourcoach',label:"Ourcoach"},
+    {name:'boughtProduct',label:"boughtProduct"},
+    {name:'LogOut',label:"LogOut"},
   ];
 
   // Dynamic rendering based on selectedOption
@@ -26,15 +35,32 @@ const AdminMenu = () => {
         return <CatagoryPages />;
       case 'Products':
         return <ProductPage />;
-      case 'Users':
-        return <AdminUsers />;
+      // case 'Users':
+      //   return <AdminUsers />;
       case 'membership':
         return <MembershipPage/>;
       case 'userMebership':
         return <UserMembership/>;
+      case 'ourcoach':
+        return <CoachPages/>;
+      case 'boughtProduct':
+        return <BoughtProducts/>;
+      case 'LogOut':
+          handleLogout(); 
+          return null; 
+       
       default:
         return <p>Select an option to see content</p>;
     }
+  };
+  const handleLogout = () => {
+    setAuth({
+      user: null,
+      token: "",
+    });
+    localStorage.removeItem("auth");
+    navigate("/"); 
+    toast.success("Logged out successfully"); // Show toast notification
   };
 
   return (
@@ -63,9 +89,8 @@ const AdminMenu = () => {
         {/* Right Column: Dynamic Content */}
         <div
           className="bg-white min-h-screen rounded-lg shadow-md p-6 flex-grow lg:w-3/4 overflow-y-auto"
-          // style={{ maxHeight: '80vh' }} // Makes the content area scrollable
+          style={{ maxHeight: '80vh' }} // Makes the content area scrollable
         >
-          <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
           <div>{renderContent()}</div> {/* Dynamic content displayed here */}
         </div>
       </div>

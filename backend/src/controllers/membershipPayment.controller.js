@@ -212,82 +212,66 @@ export const userMembership = async (req, res) => {
       .populate("membershipId"); // Ensure membershipId contains duration
 
     if (!userMemberships || userMemberships.length === 0) {
-      return res
-        .status(400)
-        .json(new ApiResponse(400, {}, "No active membership found"));
+      return res.status(400).json(new ApiResponse(400, {}, "No active membership found"));
     }
 
-    // Loop through all the active memberships and process them
+    const emailPromises = [];
     const membershipReminders = [];
+
+    const calculateDaysLeft = (membershipEndDate) => {
+      return (membershipEndDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+    };
+
     for (let userMembership of userMemberships) {
       // Extract values
       const membershipName = userMembership.membershipId?.MembershipName;
       const userEmail = userMembership.userId?.email;
       const userName = userMembership.userId?.name;
 
-      if (
-        !userMembership.purchasedDate ||
-        !userMembership.membershipId?.duration
-      ) {
-        return res
-          .status(400)
-          .json(new ApiResponse(400, {}, "Invalid membership data"));
+      if (!userMembership.purchasedDate || !userMembership.membershipId?.duration) {
+        return res.status(400).json(new ApiResponse(400, {}, "Invalid membership data"));
       }
 
       // Calculate membership duration and end date
       const duration = userMembership.membershipId.duration * 30;
       const purchasedDate = new Date(userMembership.purchasedDate);
       if (isNaN(purchasedDate.getTime())) {
-        return res
-          .status(400)
-          .json(new ApiResponse(400, {}, "Invalid purchased date"));
+        return res.status(400).json(new ApiResponse(400, {}, "Invalid purchased date"));
       }
 
       // Calculate membership end date
       const membershipEndDate = new Date(purchasedDate);
       membershipEndDate.setDate(membershipEndDate.getDate() + duration);
 
-      // Calculate remaining days
-      const daysLeft =
-        (membershipEndDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
-
+      const daysLeft = calculateDaysLeft(membershipEndDate);
       const subject = `Reminder for gym membership`;
 
       // Send reminder emails based on remaining days
       if (daysLeft < 7 && daysLeft >= 0) {
         const message = `Hello ${userName}, this is just a reminder that your membership (${membershipName}) has only 7 days left.`;
-        await emailSender(userEmail, subject, message);
+        emailPromises.push(emailSender(userEmail, subject, message));
         membershipReminders.push({ membershipName, daysLeft, message });
       } else if (daysLeft < 0) {
         const message = `Hello ${userName}, this is just a reminder that your membership (${membershipName}) has ended.`;
-        await emailSender(userEmail, subject, message);
+        emailPromises.push(emailSender(userEmail, subject, message));
         await userModel.findByIdAndUpdate(
-          userId, 
-          { isMember: false }, 
-          { new: true }  
-      );
-        membershipReminders.push({ membershipName, daysLeft, message });
-        
-      } else {
-        console.log(
-          `Membership: ${membershipName} - Days left: ${Math.ceil(daysLeft)}`
+          userMembership.userId,
+          { isMember: false },
+          { new: true }
         );
+        membershipReminders.push({ membershipName, daysLeft, message });
+      } else {
+        console.log(`Membership: ${membershipName} - Days left: ${Math.ceil(daysLeft)}`);
       }
     }
 
+    // Wait for all emails to be sent
+    await Promise.all(emailPromises);
+
     // Return the response
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(
-          200,
-          { userMemberships, membershipReminders },
-          "Memberships found"
-        )
-      );
+    return res.status(200).json(new ApiResponse(200, { userMemberships, membershipReminders }, "Memberships found"));
   } catch (error) {
-    return res
-      .status(500)
-      .json(new ApiResponse(500, error.message, "Something went wrong"));
+    console.log(error);
+    return res.status(500).json(new ApiResponse(500, error.message, "Something went wrong"));
   }
 };

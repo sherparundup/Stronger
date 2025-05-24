@@ -28,6 +28,7 @@ const CoachDetailedPage = () => {
     try {
       if (!auth.user._id) {
         toast.error("please log in first");
+        return
       }
       const UserId = auth.user._id;
       console.log(coachingPlanId, totalPrice, coachId, UserId);

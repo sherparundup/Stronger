@@ -20,7 +20,7 @@ const AdminMenu = () => {
   const options = [
     { name: 'dashboard', label: 'Dashboard' },
     { name: 'Products', label: 'Products' },
-    { name: 'Users', label: 'Users' },
+    // { name: 'Users', label: 'Users' },
     {name:'membership',label:"Membership"},
     {name:'userMebership',label:"UserMebership"},
     {name:'ourcoach',label:"Ourcoach"},

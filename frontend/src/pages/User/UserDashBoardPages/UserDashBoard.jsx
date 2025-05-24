@@ -65,7 +65,7 @@ const UserDashBoard = () => {
         <nav className="w-full space-y-4">
           {[
             { name: "Profile", icon: "👤", subMenu: ["steps", "upload your progress"] },
-            { name: "Settings", icon: "⚙️", subMenu: ["Account Settings", "Privacy"] },
+            // { name: "Settings", icon: "⚙️", subMenu: ["Account Settings", "Privacy"] },
             { name: "MyCart", icon: "🛒" },
             { name: "MyProduct", icon: "📦" },
             { name: "membership", icon: "💳" },
@@ -78,6 +78,9 @@ const UserDashBoard = () => {
               <div
                 onClick={() => {
                   if (item.name === "Logout") {
+                    localStorage.removeItem("auth")
+                    localStorage.removeItem("googleFitToken")
+                    localStorage.removeItem("isCoachVerified")
                     navigate("/login");
                   } else {
                     setSelectedOption(item.name);

@@ -76,7 +76,7 @@ const ProductPages = () => {
   }, [auth?.token]);
 
   return (
-    <div className="bg-black min-h-screen p-6 text-white">
+    <div className=" min-h-screen p-6 text-white">
       <Typography
         variant="h4"
         gutterBottom

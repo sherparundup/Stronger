@@ -81,6 +81,11 @@ const ProductDetailsPage = () => {
         toast.error("Please login to add products in the cart");
         return;
       }
+       if (stock < quantity) {
+        toast.error("No stock available at the moment");
+        return;
+      }
+      
       const res = await axios.post(
         "http://localhost:8000/api/Product/addToCart",
         {

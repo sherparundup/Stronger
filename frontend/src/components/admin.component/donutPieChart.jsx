@@ -55,7 +55,7 @@ const PieChartComponent = () => {
   return (
     <div className="flex flex-wrap justify-center gap-10 bg-white p-8 rounded-lg shadow-lg">
       {[{
-        title: "Membership Duration Distribution",
+        title: "Members",
         data: chartDataMember,
         nameKey: "duration",
         total: totalMembers,

@@ -658,3 +658,26 @@ export const getUserBoughtCourses=async(req,res)=> {
       );
   }
 };
+
+
+export const CoachRating = async (req, res) => {
+  try {
+    const testimonials = await coachTestimonialModel.find();
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        testimonials,
+        "Coach ratings fetched successfully"
+      )
+    );
+  } catch (error) {
+    return res.status(500).json(
+      new ApiResponse(
+        500,
+        null,
+        `Error fetching coach ratings: ${error.message}`
+      )
+    );
+  }
+};

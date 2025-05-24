@@ -12,9 +12,48 @@ const OurCoaches = () => {
   const [showModal, setShowModal] = useState(false); // State for showing modal
   const [selectedCoach, setSelectedCoach] = useState(null); // State for selected coach details
   const [showFullBio, setShowFullBio] = useState(false);
+  const [coachRatings, setCoachRatings] = useState({}); // State for storing coach ratings
 
+  // Function to calculate average rating for a coach
+  const calculateAverageRating = (coachId, ratingsData) => {
+    const coachRatingsList = ratingsData.filter(rating => rating.coach === coachId);
+    if (coachRatingsList.length === 0) return 0;
+    
+    const totalRating = coachRatingsList.reduce((sum, rating) => sum + rating.rating, 0);
+    return (totalRating / coachRatingsList.length).toFixed(1);
+  };
 
   useEffect(() => {
+    const ratings = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8000/api/coach/coachRating"
+        );
+        console.log("Coach ratings response:", res.data.data);
+        
+        // Create a mapping of coach ratings
+        const ratingsMap = {};
+        res.data.data.forEach(rating => {
+          if (!ratingsMap[rating.coach]) {
+            ratingsMap[rating.coach] = [];
+          }
+          ratingsMap[rating.coach].push(rating.rating);
+        });
+        
+        // Calculate average ratings for each coach
+        const averageRatings = {};
+        Object.keys(ratingsMap).forEach(coachId => {
+          const ratings = ratingsMap[coachId];
+          const average = ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length;
+          averageRatings[coachId] = parseFloat(average.toFixed(1));
+        });
+        
+        setCoachRatings(averageRatings);
+      } catch (error) {
+        console.log("Error fetching ratings:", error);
+      }
+    };
+
     const fetchVerifiedCoaches = async () => {
       try {
         const res = await axios.get(
@@ -49,6 +88,7 @@ const OurCoaches = () => {
 
     fetchVerifiedCoaches();
     coachForVerification();
+    ratings();
   }, [auth?.token, selectedCoach?.status]); // Dependency array to run on token change
 
   const handleViewCoach = (coach) => {
@@ -150,7 +190,15 @@ const OurCoaches = () => {
                       {coach.category}
                     </p>
                     <div className="mt-2">
-                      <StarRating rating={2} readOnly={true} />
+                      <StarRating 
+                        rating={coachRatings[coach._id] || 0} 
+                        readOnly={true} 
+                      />
+                      {coachRatings[coach._id] && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          {coachRatings[coach._id]} out of 5
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -321,7 +369,7 @@ const OurCoaches = () => {
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
-              </button>
+                </button>
             </div>
           </div>
         </div>

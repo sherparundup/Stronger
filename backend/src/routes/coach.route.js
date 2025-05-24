@@ -3,6 +3,7 @@ import {
   acceptClients,
   checkVerification,
   coachForContext,
+  CoachRating,
   CoachTestimonial,
   CreateCoachingPlan,
   getAllClients,
@@ -60,5 +61,7 @@ router.post(
 router.get("/getCoachingPlans/:id", getCoachingPlans);
 
 router.get("/plansRevenue/:id",plansRevenue)
+
+router.get("/coachRating",CoachRating)
 
 export default router;

@@ -185,14 +185,14 @@ export const InitializeEsewaForCoachPlan = async (req, res) => {
     });
   }
 };
-export const completePaymentForCoachPlan = async (req,res) => {
+export const completePaymentForCoachPlan = async (req, res) => {
   const { data } = req.query;
   const { id } = req.params;
   console.log("a");
 
   try {
     const paymentInfo = await verifyEsewaPayment(data);
-    console.log(paymentInfo)
+    console.log(paymentInfo);
     console.log("b");
 
     // Find the purchased item using the transaction UUID
@@ -200,17 +200,15 @@ export const completePaymentForCoachPlan = async (req,res) => {
       paymentInfo.response.transaction_uuid
     );
     console.log("c");
-    console.log(paymentInfo.response.transaction_uuid,'okkoko')
-    
-    
-    
+    console.log(paymentInfo.response.transaction_uuid, "okkoko");
+
     if (!CoachingPlanData) {
       return res.status(500).json({
         success: false,
         message: "Purchase not found",
       });
     }
-    console.log(CoachingPlanData,'coaching plan data')
+    console.log(CoachingPlanData, "coaching plan data");
 
     // Create a new payment record in the database
     const paymentData = await PaymentpaymentCoachingPlanModel.create({
@@ -234,16 +232,13 @@ export const completePaymentForCoachPlan = async (req,res) => {
       paymentInfo.response.transaction_uuid,
       { $set: { status: "completed" } }
     );
-        
+
     console.log(id, "is id");
     // Delete the corresponding cart item upon successful payment
     const product = await CoachingPlanModel.findById(id);
     const productName = product.title;
-    
-
 
     console.log(productName);
-   ;
     // Respond with success message
     // return res.json({
     //   success: true,
@@ -256,11 +251,167 @@ export const completePaymentForCoachPlan = async (req,res) => {
       `http://localhost:5173?payment=success&pro=${productName}`
     );
   } catch (error) {
-    console.log(error )
+    console.log(error);
     return res.status(500).json({
       success: false,
       error: error.message,
       ok: "error in esewa COMPLETEMENT",
+    });
+  }
+};
+
+export const InitializeBulkEsewa = async (req, res) => {
+  try {
+    const { items, UserId } = req.body;
+    console.log("1 - Request received:", { items, UserId });
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      console.log("2 - No items in cart");
+      return res.status(400).json({
+        success: false,
+        message: "No cart items provided.",
+      });
+    }
+
+    console.log("3 - Validating each item...");
+    const validatedItems = await Promise.all(
+      items.map(async (item) => {
+        const productData = await productModel.findById(item.ProductId);
+
+        if (!productData || productData.price !== item.price) {
+          console.log("4 - Validation failed for:", item.ProductId);
+          throw new Error(  
+            `Item not found or price mismatch for item ID: ${item.ProductId}`
+          );
+        }
+
+        return {
+          ProductId: productData._id,
+          quantity: item.quantity || 1,
+          price: productData.price,
+        };
+      })
+    );
+
+    console.log("5 - All items validated:", validatedItems);
+
+    const totalPrice = validatedItems.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    console.log("6 - Total price calculated:", totalPrice);
+
+    const totalQuantity = validatedItems.reduce(
+      (sum, item) => sum + item.quantity,
+      0
+    );
+    console.log("7 - Total quantity calculated:", totalQuantity);
+
+    const purchasedProductData = await PurchasedProduct.create({
+      products: validatedItems,
+      paymentMethod: "esewa",
+      totalPrice,
+      quantity: totalQuantity,
+      UserId,
+    });
+    console.log("8 - Purchase record created:", purchasedProductData);
+
+    const paymentInitiate = await getEsewaPaymentHash({
+      amount: totalPrice,
+      transaction_uuid: purchasedProductData._id,
+    });
+    console.log("9 - eSewa payment initiated:", paymentInitiate);
+    console.log("transaction uuid", paymentInitiate.transaction_uuid);
+    console.log("transaction uuid", paymentInitiate.transaction_uuid);
+    
+
+    return res.json({
+      success: true,
+      payment: paymentInitiate,
+      purchasedProductData,
+    });
+  } catch (error) {
+    console.log("X - Error occurred:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+export const CompleteBulkPayment = async (req, res) => {
+  const { data } = req.query;
+  const { id } = req.params;
+  console.log("a");
+
+  try {
+    const paymentInfo = await verifyEsewaPayment(data);
+    console.log("b");
+
+    // Find the purchased item using the transaction UUID
+    const purchasedProductData = await purchasedProduct.findById(
+      paymentInfo.response.transaction_uuid
+    );
+    console.log("c");
+
+    if (!purchasedProductData) {
+      return res.status(500).json({
+        success: false,
+        message: "Purchase not found",
+      });
+    }
+
+    // Create a new payment record in the database
+    const paymentData = await Payment.create({
+      pidx: paymentInfo.decodedData.transaction_code,
+      transactionId: paymentInfo.decodedData.transaction_code,
+      productId: paymentInfo.response.transaction_uuid,
+      amount: purchasedProductData.totalPrice,
+      dataFromVerificationReq: paymentInfo,
+      apiQueryFromUser: req.query,
+      paymentGateway: "esewa",
+      status: "success",
+    });
+    console.log(paymentInfo.response.transaction_uuid);
+
+    // Update the purchased item status to 'completed'
+    await purchasedProduct.findByIdAndUpdate(
+      paymentInfo.response.transaction_uuid,
+      { $set: { status: "completed" } }
+    );
+    console.log(id, "is id");
+    // Delete the corresponding cart item upon successful payment
+   
+    const decreaseStock = await productModel.findByIdAndUpdate(
+      id,
+      {
+        $inc: { countInStock: -purchasedProductData.quantity },
+      },
+      { new: true }
+    );
+
+    console.log("Stock updated successfully:", decreaseStock);
+
+   const cartDeletionResult = await AddToCartModel.deleteMany({});
+
+    console.log("Cart deletion result:", cartDeletionResult);
+    // Respond with success message
+    // return res.json({
+    //   success: true,
+    //   message: "Payment successful and cart item removed",
+    //   paymentData,
+    // });
+    // In your completePayment endpoint after processing
+    // Ensure the redirect URL includes the query parameter
+    return res.redirect(
+      `http://localhost:5173`
+    );
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An error occurred during payment verification",
+      error: error.message,
     });
   }
 };
